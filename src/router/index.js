@@ -1,21 +1,26 @@
+/*
+ * @Author: zxy
+ * @Date: 2022-01-01 19:42:03
+ * @LastEditTime: 2022-01-01 20:44:31
+ * @FilePath: /sku-bill-system/src/router/index.js
+ */
 import { createRouter, createWebHistory } from 'vue-router'
-import Home from '../views/Home.vue'
 
-const routes = [
+// 路由
+import billRouter from './billRouter'
+
+let routes = [
   {
-    path: '/',
-    name: 'Home',
-    component: Home
+    path: '/:catchAll(.*)',
+    name: '404',
+    component: () => import('../views/404NotFind.vue'),
+    meta: {
+      title: '出错啦！'
+    }
   },
-  {
-    path: '/about',
-    name: 'About',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
-  }
 ]
+
+routes = routes.concat(billRouter)
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),

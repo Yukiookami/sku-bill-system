@@ -1,0 +1,21 @@
+// 间距
+$margin-mini: 5px;
+// 颜色
+$color-w: #fff;
+
+// 弹性盒子
+.flex-box-between-cneter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+// 间距
+.margin-top-mini {
+  margin-top: 5px;
+}
+
+// 字体颜色
+.text-color-w {
+  color: #fff;
+}
