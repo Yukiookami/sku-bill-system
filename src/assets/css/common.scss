@@ -1,3 +1,8 @@
+// 第一区域和第二区域的高度
+$firHeight: 46.5vh;
+$secHeight: 38.5vh;
+$minfirHeight: 395px;
+$minsecHeight: 350px;
 // 间距
 $margin-mini: 5px;
 $margin-nom: 15px;
@@ -40,6 +45,19 @@ $color-25: #257dff;
 .flex-box-x-end {
   display: flex;
   justify-content: flex-end;
+}
+
+.flex-box-between-start {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.flex-box-column-between-cneter {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-direction: column;
 }
 
 // 间距

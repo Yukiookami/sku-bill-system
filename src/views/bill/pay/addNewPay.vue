@@ -1,7 +1,7 @@
 <!--
  * @Author: zxy
  * @Date: 2022-01-02 17:24:25
- * @LastEditTime: 2022-01-03 14:15:38
+ * @LastEditTime: 2022-01-03 17:43:18
  * @FilePath: /sku-bill-system/src/views/bill/pay/addNewPay.vue
 -->
 <template>
@@ -76,7 +76,7 @@
     </div>
     <!-- 登录预算 -->
     <div class="add-new-pay-yosan">
-      <dv-decoration-4 :reverse="true" style="width:95%;"></dv-decoration-4>
+      <dv-decoration-10 style="width:100%;height: 5px"></dv-decoration-10>
       <div class="flex-box-between-cneter yosan-box">
         <el-input-number
           size="small"
@@ -263,6 +263,7 @@ initNowDate()
 <style lang="scss" scoped>
 @import "../../../assets/css/common.scss";
 .add-new-pay-main {
+  position: relative;
   width: calc(100% - 20px);
   height: calc(100% - 30px);
   padding: 20px 10px 10px 10px;
@@ -279,11 +280,14 @@ initNowDate()
   }
 
   .add-new-pay-yosan {
+    position: absolute;
+    bottom: 20px;
+    left: 5%;
     width: 90%;
     margin: 10px auto 0;
 
     .yosan-box {
-      width: 96%;
+      width: 100%;
       padding-top: 20px;
     }
   }

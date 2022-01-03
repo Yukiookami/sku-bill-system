@@ -1,7 +1,7 @@
 <!--
  * @Author: zxy
  * @Date: 2022-01-01 21:28:20
- * @LastEditTime: 2022-01-03 14:08:26
+ * @LastEditTime: 2022-01-03 17:35:46
  * @FilePath: /sku-bill-system/src/views/bill/yearEcharts/yearEcharts.vue
 -->
 <template>
@@ -297,8 +297,8 @@ onMounted(() => {
 @import "../../../assets/css/icon/iconfont.css";
 .year-main {
   width: 100%;
-  height: 40.5vh;
-  min-height: 395px;
+  height: $firHeight;
+  min-height: $minfirHeight;
 
   .year-select {
     width: 100%;

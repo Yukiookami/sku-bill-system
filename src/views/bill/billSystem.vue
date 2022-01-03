@@ -1,7 +1,7 @@
 <!--
  * @Author: zxy
  * @Date: 2022-01-01 19:42:03
- * @LastEditTime: 2022-01-03 16:49:46
+ * @LastEditTime: 2022-01-03 17:55:32
  * @FilePath: /sku-bill-system/src/views/bill/billSystem.vue
 -->
 <template>
@@ -9,6 +9,27 @@
     <div class="bill-system-content-main">
       <IsLoading :is-loading="state.isLoading">
         <template #content>
+          <!-- 页头 -->
+          <div class="flex-box-between-start bill-system-header">
+            <dv-decoration-10 class="dv-dec-10" />
+            <div class="flex-box-between-cneter bill-system-title-sec">
+              <dv-decoration-8 class="dv-dec-8" :color="['#568aea', '#000000']" />
+              <div class="title">
+                <span class="title-text text-color-c3 ">Sku 家計簿</span>
+                <dv-decoration-6
+                  class="dv-dec-6"
+                  :reverse="true"
+                  :color="['#50e3c2', '#67a1e5']"
+                />
+              </div>
+              <dv-decoration-8
+                class="dv-dec-8"
+                :reverse="true"
+                :color="['#568aea', '#000000']"
+              />
+            </div>
+            <dv-decoration-10 class="dv-dec-10-s" />
+          </div>
           <!-- 第一层数据 -->
           <div class="flex-box-between-cneter bill-system-first">
             <!-- 年统计图 -->
@@ -39,6 +60,13 @@
               </dv-border-box-13>
             </div>
 
+            <!-- 周开销类型分布 -->
+            <div class="bill-system-week-type-echart">
+              <dv-border-box-12>
+                <WeekTypeEchart></WeekTypeEchart>
+              </dv-border-box-12>
+            </div>
+
             <!-- 周开销 -->
             <div class="bill-system-week-echart">
               <dv-border-box-12>
@@ -64,6 +92,8 @@ import AddNewPay from "./pay/addNewPay.vue";
 import PayList from "./pay/payList.vue";
 // 当月开销
 import MonthEchart from "./monthEcharts/monthEchart.vue";
+// 周类型
+import WeekTypeEchart from "./weekEcharts/weekTypeEchart.vue";
 // 周开销
 import WeekEcharts from "./weekEcharts/weekEcharts.vue";
 
@@ -75,9 +105,7 @@ const state = reactive({
 
 <style lang="scss" scoped>
 @import '../../assets/css/common.scss';
-
-$firHeight: 395px;
-$secHeight: 350px;
+@import '../../assets/css/index.scss';
 
 .bill-system-main {
   overflow-x: hidden;
@@ -94,7 +122,7 @@ $secHeight: 350px;
     right: 0;
     bottom: 0;
     display: block;
-    background-image: url('../../assets/img/back/IMG_2549.png');
+    background-image: url('../../assets/img/back/IMG_2554.png');
     background-size: 100% 100%;
     background-repeat: no-repeat;
     background-position: center;
@@ -107,10 +135,20 @@ $secHeight: 350px;
     width: calc(100% - 20px);
     padding: 10px;
 
+    //　header
+    .bill-system-header {
+      height: 70px;
+      padding-top: 30px;
+
+      .bill-system-title-sec {
+        width: 30%;
+      }
+    }
+
     // 第一层数据
     .bill-system-first {
-      height: 40.5vh;
-      min-height: $firHeight;
+      height: $firHeight;
+      min-height: $minfirHeight;
       // 年度
       .bill-system-year-echart {
         width: calc(100% - 380px - 420px);
@@ -131,15 +169,20 @@ $secHeight: 350px;
     }
     // 第二层数据
     .bill-system-sec {
-      height: 35.5vh;
-      min-height: $secHeight;
+      height: $secHeight;
+      min-height: $minsecHeight;
       .bill-system-month-echart {
-        width: 40%;
+        width: 600px;
+        height: 100%;
+      }
+
+      .bill-system-week-type-echart {
+        width: 300px;
         height: 100%;
       }
 
       .bill-system-week-echart {
-        width: 40%;
+        width: calc(100% - 600px - 300px);
         height: 100%;
       }
     }

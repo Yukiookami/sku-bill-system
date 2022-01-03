@@ -1,7 +1,7 @@
 <!--
  * @Author: zxy
  * @Date: 2022-01-03 15:44:21
- * @LastEditTime: 2022-01-03 16:47:19
+ * @LastEditTime: 2022-01-03 17:00:46
  * @FilePath: /sku-bill-system/src/views/bill/weekEcharts/weekEcharts.vue
 -->
 <template>
@@ -26,7 +26,7 @@
       ></el-date-picker>
 
       <div>
-        <dv-decoration-6 style="width: 100px; height: 15px" />
+        <dv-decoration-6 :color="['#50e3c2', '#67a1e5']" style="width: 100px; height: 10px" />
       </div>
     </div>
     <!-- 折线图 -->
