@@ -1,7 +1,7 @@
 /*
  * @Author: zxy
  * @Date: 2022-01-01 19:42:03
- * @LastEditTime: 2022-01-01 20:45:14
+ * @LastEditTime: 2022-01-02 16:34:51
  * @FilePath: /sku-bill-system/src/main.js
  */
 import { createApp } from 'vue'
@@ -15,6 +15,7 @@ import 'normalize.css';
 // element
 import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
+import * as Icons from '@element-plus/icons'
 
 // 引入dataV
 import dataV from '@jiaminghi/data-view'
@@ -23,6 +24,11 @@ const app = createApp(App)
 
 app.use(dataV)
 app.use(ElementPlus)
+
+// 全局注册icon
+Object.keys(Icons).forEach(key => {
+  app.component(key, Icons[key])
+})
 
 app.use(store).use(router).mount('#app')
 

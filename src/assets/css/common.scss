@@ -1,7 +1,21 @@
 // 间距
 $margin-mini: 5px;
+$margin-nom: 15px;
+$margin-big: 25px;
 // 颜色
 $color-w: #fff;
+$color-c3: #c3cbde;
+$color-5c: #5cd9e8;
+
+// 鼠标手势
+.cursor-pointer {
+  cursor: pointer;
+}
+
+// 禁止选择
+.user-select-no {
+  user-select: none;
+}
 
 // 弹性盒子
 .flex-box-between-cneter {
@@ -10,12 +24,86 @@ $color-w: #fff;
   align-items: center;
 }
 
+.flex-box-center-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.flex-box-y-center {
+  display: flex;
+  align-items: center;
+}
+
+.flex-box-x-end {
+  display: flex;
+  justify-content: flex-end;
+}
+
 // 间距
 .margin-top-mini {
-  margin-top: 5px;
+  margin-top: $margin-mini;
+}
+
+.margrin-side-mini {
+  margin: 0 $margin-mini;
+}
+
+.margrin-side-nom {
+  margin: 0 $margin-nom;
+}
+
+.margrin-side-big {
+  margin: 0 $margin-big;
+}
+
+.margrin-bottom-nom {
+  margin-bottom: $margin-nom;
+}
+
+.margrin-left-nom {
+  margin-left: $margin-nom;
+}
+
+.padding-side-mini {
+  padding: 0 $margin-mini;
 }
 
 // 字体颜色
 .text-color-w {
-  color: #fff;
+  color: $color-c3;
+}
+
+.text-color-c3 {
+  color: $color-c3;
+}
+
+.text-color-5c {
+  color: $color-5c;
+}
+
+// 字体大小
+.font-size-20 {
+  font-size: 20px;
+}
+
+.font-size-18 {
+  font-size: 18px;
+}
+
+.font-size-16 {
+  font-size: 16px;
+}
+
+.font-size-14 {
+  font-size: 14px;
+}
+
+.font-size-12 {
+  font-size: 12px;
+}
+
+// 字体粗细
+.font-bold {
+  font-weight: 700;
 }
