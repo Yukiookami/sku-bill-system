@@ -1,7 +1,7 @@
 <!--
  * @Author: zxy
  * @Date: 2022-01-03 11:50:52
- * @LastEditTime: 2022-01-03 15:24:45
+ * @LastEditTime: 2022-01-03 16:00:22
  * @FilePath: /sku-bill-system/src/views/bill/monthEcharts/monthEchart.vue
 -->
 <template>
@@ -148,8 +148,6 @@ const initNowDate = () => {
   }
 
   state.nowTime = `${date.getFullYear()}-${month}-01`;
-
-  console.log(state.nowTime);
 };
 
 /**
@@ -307,6 +305,7 @@ onMounted(() => {
   justify-content: flex-start;
 }
 
+// 是否显示底部数字
 :deep(.unit-label) {
   display: none;
 }

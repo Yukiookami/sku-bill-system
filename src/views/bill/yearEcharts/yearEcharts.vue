@@ -298,6 +298,7 @@ onMounted(() => {
 .year-main {
   width: 100%;
   height: 40.5vh;
+  min-height: 395px;
 
   .year-select {
     width: 100%;

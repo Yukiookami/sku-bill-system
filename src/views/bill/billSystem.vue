@@ -1,7 +1,7 @@
 <!--
  * @Author: zxy
  * @Date: 2022-01-01 19:42:03
- * @LastEditTime: 2022-01-03 15:28:53
+ * @LastEditTime: 2022-01-03 16:49:46
  * @FilePath: /sku-bill-system/src/views/bill/billSystem.vue
 -->
 <template>
@@ -40,8 +40,10 @@
             </div>
 
             <!-- 周开销 -->
-            <div>
-              
+            <div class="bill-system-week-echart">
+              <dv-border-box-12>
+                <WeekEcharts></WeekEcharts>
+              </dv-border-box-12>
             </div>
           </div>
         </template>
@@ -62,6 +64,8 @@ import AddNewPay from "./pay/addNewPay.vue";
 import PayList from "./pay/payList.vue";
 // 当月开销
 import MonthEchart from "./monthEcharts/monthEchart.vue";
+// 周开销
+import WeekEcharts from "./weekEcharts/weekEcharts.vue";
 
 const state = reactive({
   // todo 在请求时变动 是否正在加载
@@ -76,19 +80,32 @@ $firHeight: 395px;
 $secHeight: 350px;
 
 .bill-system-main {
+  overflow-x: hidden;
+  overflow-y: scroll;
   height: 100vh;
   width: 100vw;
-  background-image: url('../../assets/img/back/IMG_2549.png');
-  background-size: 100% 100%;
-  background-repeat: no-repeat;
-  background-position: center;
-  background-color: rgba(0, 0, 0, 1);
+  background-color: rgba(0, 0, 0, .9);
+
+  &::after {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: block;
+    background-image: url('../../assets/img/back/IMG_2549.png');
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+    z-index: -1;
+    background-color: rgba(0, 0, 0, 1);
+  }
 
   .bill-system-content-main {
     height: calc(100% - 20px);
     width: calc(100% - 20px);
     padding: 10px;
-    background-color: rgba(0, 0, 0, .8);
 
     // 第一层数据
     .bill-system-first {
@@ -96,18 +113,18 @@ $secHeight: 350px;
       min-height: $firHeight;
       // 年度
       .bill-system-year-echart {
-        width: 50%;
+        width: calc(100% - 380px - 420px);
         height: 100%;
       }
   
       // 新增开销和登录预算
       .bill-system-add-new-pay {
-        width: 25%;
+        width: 380px;
         height: 100%;
       }
 
       .bill-system-pay-list {
-        width: 25%;
+        width: 420px;
         height: 100%;
       }
 
@@ -120,7 +137,16 @@ $secHeight: 350px;
         width: 40%;
         height: 100%;
       }
+
+      .bill-system-week-echart {
+        width: 40%;
+        height: 100%;
+      }
     }
   }
+}
+
+::-webkit-scrollbar {
+  display: none;
 }
 </style>
