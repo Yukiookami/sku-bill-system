@@ -1,7 +1,7 @@
 <!--
  * @Author: zxy
  * @Date: 2022-01-01 21:28:20
- * @LastEditTime: 2022-01-02 17:21:29
+ * @LastEditTime: 2022-01-03 14:08:26
  * @FilePath: /sku-bill-system/src/views/bill/yearEcharts/yearEcharts.vue
 -->
 <template>

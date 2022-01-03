@@ -6,6 +6,8 @@ $margin-big: 25px;
 $color-w: #fff;
 $color-c3: #c3cbde;
 $color-5c: #5cd9e8;
+$color-bg: rgba(19, 25, 47, 0.6);
+$color-25: #257dff;
 
 // 鼠标手势
 .cursor-pointer {
@@ -80,6 +82,10 @@ $color-5c: #5cd9e8;
 
 .text-color-5c {
   color: $color-5c;
+}
+
+.text-color-25 {
+  color: $color-25;
 }
 
 // 字体大小

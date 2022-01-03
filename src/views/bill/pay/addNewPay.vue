@@ -1,7 +1,7 @@
 <!--
  * @Author: zxy
  * @Date: 2022-01-02 17:24:25
- * @LastEditTime: 2022-01-02 18:55:00
+ * @LastEditTime: 2022-01-03 14:15:38
  * @FilePath: /sku-bill-system/src/views/bill/pay/addNewPay.vue
 -->
 <template>
@@ -93,6 +93,7 @@
 
 <script setup>
 import { reactive } from "@vue/reactivity";
+import { onMounted } from "@vue/runtime-core";
 
 const state = reactive({
   // 予算
@@ -233,13 +234,37 @@ const chooseDay = (e) => {
 const handleChange = (e) => {
   console.log(e);
 };
+
+/**
+ * @description: 设置当前年月日
+ * @param {*}
+ * @return {*}
+ */
+const initNowDate = () => {
+  const date = new Date()
+  let month = (date.getMonth() + 1).toString()
+  let day = date.getDate().toString()
+
+  if (month.length !== 2) {
+    month = 0 + month
+  }
+
+  if (day.length !== 2) {
+    day = 0 + day
+  }
+
+  formData.payTime = `${date.getFullYear()}-${month}-${day}`
+}
+
+
+initNowDate()
 </script>
 
 <style lang="scss" scoped>
 @import "../../../assets/css/common.scss";
 .add-new-pay-main {
-  width: 100%;
-  height: 100%;
+  width: calc(100% - 20px);
+  height: calc(100% - 30px);
   padding: 20px 10px 10px 10px;
 
   .submit-button {

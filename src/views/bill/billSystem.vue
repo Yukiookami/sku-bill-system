@@ -1,7 +1,7 @@
 <!--
  * @Author: zxy
  * @Date: 2022-01-01 19:42:03
- * @LastEditTime: 2022-01-02 19:01:29
+ * @LastEditTime: 2022-01-03 15:28:53
  * @FilePath: /sku-bill-system/src/views/bill/billSystem.vue
 -->
 <template>
@@ -31,10 +31,12 @@
             </div>
           </div>
           <!-- 第二层数据 -->
-          <div class="flex-box-between-cneter">
+          <div class="flex-box-between-cneter bill-system-sec">
             <!-- 月开销 -->
-            <div>
-
+            <div class="bill-system-month-echart">
+              <dv-border-box-13>
+                <MonthEchart></MonthEchart>
+              </dv-border-box-13>
             </div>
 
             <!-- 周开销 -->
@@ -58,6 +60,8 @@ import YearEcharts from "./yearEcharts/yearEcharts.vue";
 import AddNewPay from "./pay/addNewPay.vue";
 // 开销面板(周为单位)
 import PayList from "./pay/payList.vue";
+// 当月开销
+import MonthEchart from "./monthEcharts/monthEchart.vue";
 
 const state = reactive({
   // todo 在请求时变动 是否正在加载
@@ -67,6 +71,9 @@ const state = reactive({
 
 <style lang="scss" scoped>
 @import '../../assets/css/common.scss';
+
+$firHeight: 395px;
+$secHeight: 350px;
 
 .bill-system-main {
   height: 100vh;
@@ -86,6 +93,7 @@ const state = reactive({
     // 第一层数据
     .bill-system-first {
       height: 40.5vh;
+      min-height: $firHeight;
       // 年度
       .bill-system-year-echart {
         width: 50%;
@@ -94,12 +102,22 @@ const state = reactive({
   
       // 新增开销和登录预算
       .bill-system-add-new-pay {
-        width: 24%;
+        width: 25%;
         height: 100%;
       }
 
       .bill-system-pay-list {
-        width: 24%;
+        width: 25%;
+        height: 100%;
+      }
+
+    }
+    // 第二层数据
+    .bill-system-sec {
+      height: 35.5vh;
+      min-height: $secHeight;
+      .bill-system-month-echart {
+        width: 40%;
         height: 100%;
       }
     }
