@@ -1,7 +1,7 @@
 /*
  * @Author: zxy
  * @Date: 2022-01-01 19:42:03
- * @LastEditTime: 2022-01-04 13:57:27
+ * @LastEditTime: 2022-01-04 17:22:18
  * @FilePath: /sku-bill-system/src/main.js
  */
 import { createApp } from 'vue'
@@ -44,10 +44,12 @@ router.beforeEach((to, from, next) => {
   //   // 判断是否需要登录
     if (to.meta.requiresBillAuth) {
       // 判断是否有token
-      if (storage.getItem('token')) {
+      if (storage.getItem('bill_token')) {
         next()
       } else {
-        router.push('/login')
+        next({
+          path: '/login'
+        })
       }
     } else {
       next()

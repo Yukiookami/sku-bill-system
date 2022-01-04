@@ -1,7 +1,7 @@
 <!--
  * @Author: zxy
  * @Date: 2022-01-01 20:04:08
- * @LastEditTime: 2022-01-04 15:02:49
+ * @LastEditTime: 2022-01-04 17:23:13
  * @FilePath: /sku-bill-system/src/views/billLogin.vue
 -->
 <template>
@@ -23,7 +23,7 @@
       </div>
 
       <dv-border-box-9>
-        <div class="login-reg">
+        <div class="login-reg" @keydown.enter="userLogin">
           <div class="bill-system-login" :class="{'move-bord': state.checkFlag}">
             <el-form ref="loginFormRef" :model="loginForm">
               <template v-for="item in state.loginFormList" :key="item.data">
@@ -36,7 +36,7 @@
               </template>
             </el-form>
 
-            <div class="login-button text-color-c3">
+            <div class="login-button text-color-c3" @click="userLogin">
               <dv-border-box-8>
                 <div>
                   ログイン
@@ -57,7 +57,7 @@
               </template>
             </el-form>
 
-            <div class="login-button text-color-c3">
+            <div class="login-button text-color-c3" @click="userReg">
               <dv-border-box-8 :reverse="true">
                 <div>
                   登録
@@ -75,6 +75,10 @@
 import { computed, reactive, ref } from "@vue/reactivity";
 import { onBeforeUnmount, onMounted } from "@vue/runtime-core";
 import { throttle } from "echarts";
+import { ElMessage } from "element-plus";
+import { httpUserLogin, httpUserReg } from "../request/login/login";
+import { checkObjIsEmpty, goToPage, returnMessage } from "../until";
+import storage from "../until/storage";
 
 const changeBord = ref(null)
 
@@ -127,6 +131,78 @@ const state = reactive({
 })
 
 /**
+ * @description: 用户登录
+ * @param {*}
+ * @return {*}
+ */
+const userLogin = async () => {
+  try {
+    if (checkObjIsEmpty(loginForm)) {
+      ElMessage.warning('ユーザー名またはパスワードを入力してください')
+    } else {
+      const res = await httpUserLogin({
+        username: loginForm.username,
+        password: loginForm.password
+      })
+
+      if (res.status === 2000) {
+        res.msg = `${loginForm.username} ようこそ！`
+      }
+
+      returnMessage(res).success(() => {
+        storage.setItem('bill_token', res.data.token)
+        goToPage('/bill')
+      })
+    }
+  } catch (err) {
+    console.log(err)
+  }
+}
+
+/**
+ * @description: 用户注册
+ * @param {*}
+ * @return {*}
+ */
+const userReg = async () => {
+  try { 
+    if (checkObjIsEmpty(regFrom)) {
+      ElMessage.warning('全部入力してください')
+    } else {
+      if (regFrom.password.length < 6) {
+        ElMessage.warning('パスワードは６位以上入力してください')
+      } else if (regFrom.username.length < 3) {
+        ElMessage.warning('ユーザ名は３位以上入力してください')
+      } else if (regFrom.password !== regFrom.confirmPassword) {
+        ElMessage.warning('パスワードは一致しません')
+      } else {
+        const res = await httpUserReg({
+          username: regFrom.username,
+          password: regFrom.password
+        })
+
+        console.log(res)
+
+        if (res.status === 2000) {
+          res.msg = 'ユーザー登録成功です'
+        }
+
+        returnMessage(res).success(() => {
+          for (let i in regFrom) {
+            regFrom[i] = ''
+          }
+
+          state.checkFlag = false
+        })
+      }
+    }
+
+  } catch (err) {
+    console.log(err)
+  }
+}
+
+/**
  * @description: 节流
  * @param {*}
  * @return {*}
@@ -144,6 +220,11 @@ onBeforeUnmount(() => {
   // 销毁事件绑定
   changeBord.value.removeEventListener('click', throttleFn)
 })
+
+// 如果存在token就不停留在这个页面
+if (storage.getItem('bill_token')) {
+  goToPage('/bill')
+}
 </script>
 
 <style lang="scss" scoped>

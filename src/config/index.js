@@ -1,12 +1,12 @@
 /*
  * @Author: zxy
  * @Date: 2022-01-01 20:06:00
- * @LastEditTime: 2022-01-04 13:55:55
+ * @LastEditTime: 2022-01-04 15:19:20
  * @FilePath: /sku-bill-system/src/config/index.js
  */
 const EnvConfig = {
   pord: {
-    baseAPI: 'http://localhost:8090/api/v1/',
+    baseAPI: 'http://35.75.242.25:8088',
     mockAPI: ''
   }
 }
