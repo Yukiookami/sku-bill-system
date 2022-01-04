@@ -1,7 +1,7 @@
 /*
  * @Author: zxy
  * @Date: 2022-01-01 19:42:03
- * @LastEditTime: 2022-01-01 20:44:31
+ * @LastEditTime: 2022-01-04 13:51:25
  * @FilePath: /sku-bill-system/src/router/index.js
  */
 import { createRouter, createWebHistory } from 'vue-router'
@@ -18,6 +18,14 @@ let routes = [
       title: '出错啦！'
     }
   },
+  {
+    path: '/login',
+    name: 'Login',
+    component: () => import('../views/billLogin.vue'),
+    meta: {
+      title: 'Login'
+    }
+  }
 ]
 
 routes = routes.concat(billRouter)

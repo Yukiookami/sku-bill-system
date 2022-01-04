@@ -1,7 +1,7 @@
 /*
  * @Author: zxy
  * @Date: 2022-01-01 19:42:03
- * @LastEditTime: 2022-01-02 16:34:51
+ * @LastEditTime: 2022-01-04 13:57:27
  * @FilePath: /sku-bill-system/src/main.js
  */
 import { createApp } from 'vue'
@@ -19,6 +19,9 @@ import * as Icons from '@element-plus/icons'
 
 // 引入dataV
 import dataV from '@jiaminghi/data-view'
+
+// 引入封装的storage
+import storage from './until/storage';
 
 const app = createApp(App)
 
@@ -39,18 +42,15 @@ router.beforeEach((to, from, next) => {
     document.title = to.meta.title
 
   //   // 判断是否需要登录
-  //   if (to.meta.requiresAuth) {
-  //     // 判断是否有cookie
-  //     if (VueCookieNext.getCookie("login_SKU_cookies")) {
-  //       next()
-  //     } else {
-  //       next({
-  //         path: '/program'
-  //       })
-  //     }
-  //   } else {
-  //     next()
-  //   }
-    next()
+    if (to.meta.requiresBillAuth) {
+      // 判断是否有token
+      if (storage.getItem('token')) {
+        next()
+      } else {
+        router.push('/login')
+      }
+    } else {
+      next()
+    }
   }
 })
