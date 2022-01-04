@@ -1,7 +1,7 @@
 <!--
  * @Author: zxy
  * @Date: 2022-01-02 18:56:45
- * @LastEditTime: 2022-01-04 22:24:00
+ * @LastEditTime: 2022-01-04 23:39:53
  * @FilePath: /sku-bill-system/src/views/bill/pay/payList/payItem.vue
 -->
 <template>
@@ -76,7 +76,7 @@ const porps = defineProps({
   }
 
   .time-box {
-    width: 80px;
+    width: 100px;
   }
 
   .money-box {

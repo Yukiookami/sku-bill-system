@@ -1,7 +1,7 @@
 <!--
  * @Author: zxy
  * @Date: 2022-01-01 19:42:03
- * @LastEditTime: 2022-01-04 22:17:09
+ * @LastEditTime: 2022-01-04 23:06:44
  * @FilePath: /sku-bill-system/src/views/bill/billSystem.vue
 -->
 <template>
@@ -79,7 +79,8 @@
             <!-- 周开销 -->
             <div class="bill-system-week-echart">
               <dv-border-box-12>
-                <WeekEcharts :weekDataList="state.weekDataList"></WeekEcharts>
+                <WeekEcharts :weekDataList="state.weekDataList"
+                :nowDate="state.nowDate"></WeekEcharts>
               </dv-border-box-12>
             </div>
           </div>

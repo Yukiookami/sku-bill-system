@@ -1,7 +1,7 @@
 <!--
  * @Author: zxy
  * @Date: 2022-01-03 15:44:21
- * @LastEditTime: 2022-01-04 21:26:09
+ * @LastEditTime: 2022-01-04 23:38:58
  * @FilePath: /sku-bill-system/src/views/bill/weekEcharts/weekEcharts.vue
 -->
 <template>
@@ -39,14 +39,21 @@
 
 <script setup>
 import { reactive, ref } from "@vue/reactivity";
-import { onMounted } from "@vue/runtime-core";
+import { onMounted, watch } from "@vue/runtime-core";
 import * as echarts from "echarts";
+import { getCurrentWeekFirstDay, getDateByDayFor7 } from "../../../until/time";
 
 const weekEchart = ref(null);
+
+const props = defineProps({
+  weekDataList: Array,
+  nowDate: String
+})
 
 const state = reactive({
   nowTime: "",
   nowYear: "2022",
+  weekPayList: []
 });
 
 /**
@@ -81,7 +88,8 @@ const initWeekEchart = () => {
           cap: "round",
         },
       },
-      data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+      // data: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+      data: ["日", "月", "火", "水", "木", "金", "土"],
     },
     yAxis: {
       splitLine: { show: false },
@@ -94,7 +102,7 @@ const initWeekEchart = () => {
     },
     series: [
       {
-        data: [2200, 2300, 2000, 1200, 1290, 1330, 1320],
+        data: state.weekPayList,
         type: "line",
         smooth: true,
         symbolSize: 8,
@@ -180,6 +188,48 @@ const chooseDay = (e) => {
   state.nowYear = e.slice(0, 4)
 };
 
+/**
+ * @description: 根据周数据，生成图表
+ * @param {*}
+ * @return {*}
+ */
+const initEchartDataByWeek = (data, time) => {
+  try {
+    state.weekPayList = [...new Array(7).fill(0)]
+
+    let firstDay = getCurrentWeekFirstDay(new Date(time))
+
+    let dateArr = getDateByDayFor7(firstDay)
+    console.log(data)
+    console.log(dateArr)
+
+    data.forEach(ele => {
+      let index = dateArr.findIndex(item => ele.payTime.slice(0, 10) === item)
+
+      if (index !== -1) {
+        state.weekPayList[index] += ele.payMoney
+      }
+    });
+  } catch (err) {
+    console.log(err)
+  }
+}
+
+// 监听周数据变动
+watch(() => props.weekDataList, val => {
+  initEchartDataByWeek(val, props.nowDate)
+})
+
+// 监听时间变动
+watch(() => props.nowDate, val => {
+  state.nowTime = val
+  chooseDay(val)
+})
+
+// 初始化周数据
+initEchartDataByWeek(props.weekDataList, props.nowDate)
+
+// 初始化时间
 initNowDate();
 
 onMounted(() => {

@@ -1,7 +1,7 @@
 <!--
  * @Author: zxy
  * @Date: 2022-01-02 18:49:00
- * @LastEditTime: 2022-01-04 22:27:01
+ * @LastEditTime: 2022-01-04 23:43:58
  * @FilePath: /sku-bill-system/src/views/bill/pay/payList.vue
 -->
 <template>
@@ -26,7 +26,7 @@
 
           <template #time>
             <span>
-              {{ item.payTime.slice(0, 10) }}
+              {{ item.payTime.slice(0, 10) }} ({{getDateByDayInWeek(item.payTime.slice(0, 10))}})
             </span>
           </template>
 
@@ -65,7 +65,7 @@ import { onMounted, watch } from "@vue/runtime-core";
 import { httpDelPay } from "../../../request/pay/pay";
 import store from "../../../store";
 import { returnMessage } from "../../../until";
-import { getFirstAndLastDayByWeek } from "../../../until/time";
+import { getDateByDayInWeek, getFirstAndLastDayByWeek } from "../../../until/time";
 import PayItem from "./payList/payItem.vue";
 
 const emit = defineEmits([

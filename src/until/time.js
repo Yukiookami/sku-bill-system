@@ -1,7 +1,7 @@
 /*
  * @Author: zxy
  * @Date: 2022-01-04 20:42:27
- * @LastEditTime: 2022-01-04 21:32:27
+ * @LastEditTime: 2022-01-04 23:44:35
  * @FilePath: /sku-bill-system/src/until/time.js
  */
 /**
@@ -10,7 +10,7 @@
  * @return {*}
  */
 const getWeekByDay = (dt) => {
-  let d1 = new Date(dt)
+  let d1 = new Date(dt) 
   let d2 = new Date(dt)
 
   d2.setMonth(0)
@@ -74,6 +74,53 @@ const getStartAndEndDayByWeek = (weekstr) => {
 }
 
 /**
+ * @description: 输入某一天日期。获得之后连续7天的日期
+ * @param {*}
+ * @return {*}
+ */
+const getDateByDayFor7 = (date) => {
+  let base = new Date(date).getTime()
+  let oneDay = 24 * 3600 * 1000;
+  let dateList = [];
+  let data = [Math.random() * 300];
+  let time = new Date(base);
+
+
+  let month = time.getMonth()
+  let day = time.getDate()
+
+  if (month.length !== 2) {
+    month = 0 + (month + 1).toString()
+  }
+
+  if (day.length !== 2) {
+    day = 0 + day.toString()
+  }
+
+  dateList.push([time.getFullYear(), month, day].join('-'));
+  for (let i = 1; i <7; i++) {
+    let now = new Date(base += oneDay);
+
+    let month = now.getMonth()
+    let day = now.getDate()
+
+    if (month.length !== 2) {
+      month = 0 + (month + 1).toString()
+    }
+
+    if (day.length !== 2) {
+      day = 0 + day.toString()
+    }
+
+    dateList.push([now.getFullYear(), month, day].join('-'));
+    data.push(Math.round((Math.random() - 0.5) * 20 + data[i - 1]));
+  }
+  let newdate = dateList
+
+  return newdate;
+}
+
+/**
  * @description: 根据yyyy-mm-dd 获得该周的第一天（date为date对象，周天为第一天）
  * @param {*} date
  * @return {*}
@@ -111,6 +158,20 @@ function getCurrentWeekLastDay(date) {
 
   return weekLastDay.getFullYear() + '-' + lastMonth + '-' + weekLastDays;
 }
+/**
+ * @description: 获得每周的开头和结束（date为date对象）
+ * @param {*}
+ * @return {*}
+ */
+const getFirstAndLastDayByWeek = (date) => {
+  let startDay = getCurrentWeekFirstDay(date)
+  let lastDay = getCurrentWeekLastDay(date)
+
+  return {
+    startDay,
+    lastDay
+  }
+} 
 
 /**
  * @description: 获得当前年月日 格式为yyyy-mm-dd
@@ -134,19 +195,16 @@ function getCurrentWeekLastDay(date) {
 }
 
 /**
- * @description: 获得每周的开头和结束（date为date对象）
+ * @description: 根据日期获得星期 格式为yyyy-mm-dd
  * @param {*}
  * @return {*}
  */
-const getFirstAndLastDayByWeek = (date) => {
-  let startDay = getCurrentWeekFirstDay(date)
-  let lastDay = getCurrentWeekLastDay(date)
+const getDateByDayInWeek = (date) => {
+  const dateObj = new Date(date)
+  const weekArr = ["日", "月", "火", "水", "木", "金", "土"]
 
-  return {
-    startDay,
-    lastDay
-  }
-} 
+  return weekArr[dateObj.getDay()]
+}
 
 export {
   getWeekByDay,
@@ -154,5 +212,7 @@ export {
   getCurrentWeekFirstDay,
   getCurrentWeekLastDay,
   getNowDate,
-  getFirstAndLastDayByWeek
+  getFirstAndLastDayByWeek,
+  getDateByDayFor7,
+  getDateByDayInWeek
 }
