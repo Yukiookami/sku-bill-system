@@ -1,7 +1,7 @@
 <!--
  * @Author: zxy
  * @Date: 2022-01-02 17:24:25
- * @LastEditTime: 2022-01-03 17:43:18
+ * @LastEditTime: 2022-01-04 22:55:45
  * @FilePath: /sku-bill-system/src/views/bill/pay/addNewPay.vue
 -->
 <template>
@@ -66,11 +66,11 @@
 
         <div class="text-color-c3 flex-box-between-cneter" style="width: 91%">
           <div>
-            <span v-if="state.isEdit" class="submit-button margrin-left-nom">キャンセル</span>
+            <span v-if="state.isEdit" @click="dontEdit" class="submit-button margrin-left-nom">キャンセル</span>
           </div>
 
-          <span v-if="!state.isEdit" class="submit-button">登録</span>
-          <span v-else class="submit-button">編集</span> 
+          <span v-if="!state.isEdit" class="submit-button" @click="newPay(0)">登録</span>
+          <span v-else class="submit-button" @click="newPay(1)">編集</span> 
         </div>
       </el-form>
     </div>
@@ -85,7 +85,7 @@
           :controls="false"
         ></el-input-number>
         
-        <span class="submit-button">予算登録</span> 
+        <span @click="yosanAdd" class="submit-button">予算登録</span> 
       </div>
     </div>
   </div>
@@ -93,13 +93,28 @@
 
 <script setup>
 import { reactive } from "@vue/reactivity";
-import { onMounted } from "@vue/runtime-core";
+import { onMounted, watch } from "@vue/runtime-core";
+import { ElMessage } from "element-plus";
+import { httpEditBudget } from "../../../request/budget/budget";
+import { httpEditPay, httpNewPay } from "../../../request/pay/pay";
+import store from "../../../store";
+import { checkObjIsEmpty, returnMessage } from "../../../until";
+import { getCurrentWeekFirstDay, getCurrentWeekLastDay, getFirstAndLastDayByWeek, getNowDate } from "../../../until/time";
+
+const emit = defineEmits([
+  // 获得周数据
+  'getWeekData'
+])
 
 const state = reactive({
   // 予算
-  yosan: 100000,
+  yosan: 0,
   // 编辑模式
   isEdit: false,
+  // 编辑id
+  editId: '',
+  // 把其他不需要的字段也交上去
+  editObj: '',
   // 生成form表单
   formDom: [
     {
@@ -107,23 +122,23 @@ const state = reactive({
       type: "numberInput",
       title: "金額",
       des: "円",
-      placeholder: '金額を入力してください'
+      placeholder: ''
     },
     {
       data: "payDetail",
       type: "input",
-      title: "支出描述"
+      title: "支出概要"
     },
     {
       data: "payTime",
       type: "date",
-      title: "消费时间",
+      title: "支出時間",
       placeholder: 'pick a day'
     },
     {
       data: "type",
       type: "sel",
-      title: "消费类型",
+      title: "タイプ",
       placeholder: 'select type',
       options: [
         {
@@ -241,20 +256,129 @@ const handleChange = (e) => {
  * @return {*}
  */
 const initNowDate = () => {
-  const date = new Date()
-  let month = (date.getMonth() + 1).toString()
-  let day = date.getDate().toString()
-
-  if (month.length !== 2) {
-    month = 0 + month
-  }
-
-  if (day.length !== 2) {
-    day = 0 + day
-  }
-
-  formData.payTime = `${date.getFullYear()}-${month}-${day}`
+  formData.payTime = getNowDate()
 }
+
+/**
+ * @description: 数据初始化
+ * @param {*}
+ * @return {*}
+ */
+const initData = () => {
+  state.editId = ''
+  state.isEdit = false
+  formData.payDetail = ''
+  formData.payMoney = 0
+  initNowDate()
+  formData.type = ''
+}
+
+/**
+ * @description: 新增开销
+ * @param {*} flag 0 新增 1修改
+ * @return {*}
+ */
+const newPay = async (flag) => {
+  try {
+    if (checkObjIsEmpty(formData)) {
+      ElMessage.warning('全部入力してください')
+    } else {
+      let res = null
+      let msg = ''
+
+      if (!flag) {
+        res = await httpNewPay({
+          payDetail: formData.payDetail,
+          payMoney: formData.payMoney,
+          payTime: formData.payTime,
+          type: formData.type.join('/')
+        })
+
+        msg = '支出登録成功しました！'
+      } else {
+        res = await httpEditPay({
+          createTime: state.editObj.createTime,
+          id: state.editId,
+          payDetail: formData.payDetail,
+          payMoney: formData.payMoney,
+          payTime: formData.payTime,
+          type: formData.type.join('/'),
+          updateTime: state.editObj.updateTime,
+          userId: state.editObj.userId 
+        })
+
+        msg = '編集成功しました！'
+      }
+
+      returnMessage(res, msg).success(() => {
+        // 获得该日期对应周的第一天和最后一天
+        let { startDay, lastDay } = getFirstAndLastDayByWeek(new Date(formData.payTime))
+
+        initData()
+
+        emit('getWeekData', startDay, lastDay, formData.payTime)
+      })
+    }
+  } catch (err) {
+    console.log(err)
+  }
+}
+
+/**
+ * @description: 放弃编辑
+ * @param {*}
+ * @return {*}
+ */
+const dontEdit = () => {
+  store.commit('setNowEditData', '')
+  initData()
+}
+
+ /**
+  * @description: 登录预算
+  * @param {*}
+  * @return {*}
+  */
+const yosanAdd = async () => {
+  try {
+    if (state.yosan < 0) {
+      ElMessage.warning('予算は最低0以上です')
+    } else {
+      const res = await httpEditBudget({
+        budget: state.yosan
+      })
+
+      console.log(res)
+
+      returnMessage(res, '予算登録しました').success(() => {
+        state.yosan = res.data
+      })
+    }
+  } catch (err) {
+
+  }
+}
+ 
+/**
+ * @description: 监听编辑数据
+ */
+watch(() => store.state.nowEditData, (val) => {
+  if (val) {
+    state.editObj = val
+    let { id } = val
+  
+    state.isEdit = true
+    state.editId = id
+  
+    for(let i in formData) {
+      if (i === 'type') {
+        formData[i] = val[i].split('/')
+      } else {
+        formData[i] = val[i]
+      }
+    }
+  }
+})
 
 
 initNowDate()

@@ -1,7 +1,7 @@
 <!--
  * @Author: zxy
  * @Date: 2022-01-01 21:28:20
- * @LastEditTime: 2022-01-03 17:35:46
+ * @LastEditTime: 2022-01-04 21:26:01
  * @FilePath: /sku-bill-system/src/views/bill/yearEcharts/yearEcharts.vue
 -->
 <template>
@@ -47,8 +47,10 @@
 
 <script setup>
 import { computed, reactive, ref } from "@vue/reactivity";
-import { onMounted } from "@vue/runtime-core";
+import { onMounted, watch } from "@vue/runtime-core";
+import axios from "axios";
 import * as echarts from "echarts";
+import { httpGetPayDataByTimeAndType } from "../../../request/pay/pay";
 
 const yearEchartsDoker = ref(null);
 const yearRingDorker = ref(null);
@@ -196,7 +198,7 @@ const initYearEcharts = () => {
       },
     },
     legend: {
-      data: ["总消费", "生活开销"],
+      data: ["支出", "生活費"],
       textStyle: {
         color: "#ccc",
       },
@@ -229,7 +231,7 @@ const initYearEcharts = () => {
     },
     series: [
       {
-        name: "总消费",
+        name: "支出",
         type: "line",
         smooth: true,
         showAllSymbol: true,
@@ -238,7 +240,7 @@ const initYearEcharts = () => {
         data: lineData,
       },
       {
-        name: "生活开销",
+        name: "生活費",
         type: "bar",
         barWidth: 10,
         itemStyle: {
@@ -285,10 +287,39 @@ const initYearEcharts = () => {
   option && myChart.setOption(option);
 };
 
+/**
+ * @description: 获得一年的开销
+ * @param {*}
+ * @return {*}
+ */
+const getDataInYear = async () => {
+  try {
+    const res = await httpGetPayDataByTimeAndType('', `${state.showYear}-01-01`, `${state.showYear + 1}-01-01`)
+
+    // console.log(res)
+  } catch (err) {
+    console.log(err)
+  }
+} 
+
+state.showYear = state.nowYear;
+
+axios.all([
+  getDataInYear()
+])
+
+/**
+ * @description: 监听年份变化
+ * @param {*}
+ * @return {*}
+ */
+watch(() => state.showYear, val => {
+  getDataInYear()
+})
+
 onMounted(() => {
   initYearEcharts();
   initYearRing();
-  state.showYear = state.nowYear;
 });
 </script>
 

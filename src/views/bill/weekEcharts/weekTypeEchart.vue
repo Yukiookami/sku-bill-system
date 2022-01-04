@@ -1,7 +1,7 @@
 <!--
  * @Author: zxy
  * @Date: 2022-01-03 17:03:47
- * @LastEditTime: 2022-01-03 17:15:02
+ * @LastEditTime: 2022-01-04 18:01:01
  * @FilePath: /sku-bill-system/src/views/bill/weekEcharts/weekTypeEchart.vue
 -->
 <template>
@@ -10,7 +10,7 @@
     <div class="week-type-echarts-header flex-box-between-cneter">
       <div class="text-color-c3">
         <i class="iconfont icon-chart-area font-size-16 text-color-5c"></i>
-        <span class="font-size-12 margrin-side-mini">周开销类型</span>
+        <span class="font-size-12 margrin-side-mini">支出タイプ（週）</span>
       </div>
 
       <div>

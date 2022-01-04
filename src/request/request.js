@@ -1,7 +1,7 @@
 /*
  * @Author: zxy
  * @Date: 2022-01-01 20:05:02
- * @LastEditTime: 2022-01-04 17:01:27
+ * @LastEditTime: 2022-01-04 21:40:36
  * @FilePath: /sku-bill-system/src/request/request.js
  */
 import axios from "axios";
@@ -26,7 +26,9 @@ export function request(option) {
     const token = storage.getItem('bill_token') || '';
     req.headers['Content-Type'] = 'application/json'
 
-    if (token) headers.Authorization = 'Bearer ' + token;
+    // 'Bearer ' + 
+    // Authorization
+    if (token) headers.token = token;
 
     return req
   })
@@ -40,7 +42,6 @@ export function request(option) {
     } = res.data;
 
     if (status === 2000) {
-      console.log(res)
       return res.data;
     } else if (status === false) {
       // token过期 

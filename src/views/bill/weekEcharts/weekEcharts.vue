@@ -1,7 +1,7 @@
 <!--
  * @Author: zxy
  * @Date: 2022-01-03 15:44:21
- * @LastEditTime: 2022-01-03 17:00:46
+ * @LastEditTime: 2022-01-04 21:26:09
  * @FilePath: /sku-bill-system/src/views/bill/weekEcharts/weekEcharts.vue
 -->
 <template>
@@ -11,10 +11,11 @@
     <div class="week-echarts-header flex-box-between-cneter">
       <div class="text-color-c3">
         <i class="iconfont icon-chart-area font-size-16 text-color-5c"></i>
-        <span class="font-size-12 margrin-side-mini">周开销统计</span>
+        <span class="font-size-12 margrin-side-mini">週支出統計</span>
       </div>
 
       <el-date-picker
+        :clearable="false"
         :default-value="new Date()"
         style="width: 152px; margin-top: 10px"
         value-format="YYYY-MM-DD"
@@ -146,7 +147,6 @@ const initWeekEchart = () => {
 };
 
 /**
-/**
  * @description: 设置当前年月日
  * @param {*}
  * @return {*}
@@ -177,7 +177,7 @@ const initNowDate = () => {
  * @return {*}
  */
 const chooseDay = (e) => {
-  console.log(e);
+  state.nowYear = e.slice(0, 4)
 };
 
 initNowDate();

@@ -1,7 +1,7 @@
 <!--
  * @Author: zxy
  * @Date: 2022-01-01 19:42:03
- * @LastEditTime: 2022-01-03 17:55:32
+ * @LastEditTime: 2022-01-04 22:17:09
  * @FilePath: /sku-bill-system/src/views/bill/billSystem.vue
 -->
 <template>
@@ -29,6 +29,13 @@
               />
             </div>
             <dv-decoration-10 class="dv-dec-10-s" />
+
+            <div class="bill-system-loginout" @click="userLoginout">
+              <div class="submit-button">
+                <i class="iconfont icon-diagnose text-color-5c"></i>
+                ログアウト
+              </div>
+            </div>
           </div>
           <!-- 第一层数据 -->
           <div class="flex-box-between-cneter bill-system-first">
@@ -40,14 +47,16 @@
             <!-- 开销的操作 -->
             <div class="bill-system-add-new-pay">
               <dv-border-box-1>
-                <AddNewPay></AddNewPay>
+                <AddNewPay @getWeekData="getWeekData"></AddNewPay>
               </dv-border-box-1>
             </div>
 
             <!-- 开销list -->
             <div class="bill-system-pay-list">
               <dv-border-box-13>
-                <PayList></PayList>
+                <PayList :weekDataList="state.weekDataList"
+                :nowDate="state.nowDate"
+                @getWeekData="getWeekData"></PayList>
               </dv-border-box-13>
             </div>
           </div>
@@ -63,14 +72,14 @@
             <!-- 周开销类型分布 -->
             <div class="bill-system-week-type-echart">
               <dv-border-box-12>
-                <WeekTypeEchart></WeekTypeEchart>
+                <WeekTypeEchart :weekDataList="state.weekDataList"></WeekTypeEchart>
               </dv-border-box-12>
             </div>
 
             <!-- 周开销 -->
             <div class="bill-system-week-echart">
               <dv-border-box-12>
-                <WeekEcharts></WeekEcharts>
+                <WeekEcharts :weekDataList="state.weekDataList"></WeekEcharts>
               </dv-border-box-12>
             </div>
           </div>
@@ -96,11 +105,69 @@ import MonthEchart from "./monthEcharts/monthEchart.vue";
 import WeekTypeEchart from "./weekEcharts/weekTypeEchart.vue";
 // 周开销
 import WeekEcharts from "./weekEcharts/weekEcharts.vue";
+import storage from "../../until/storage";
+import { goToPage } from "../../until";
+import { httpGetPayDataByTimeAndType } from "../../request/pay/pay";
+import { getFirstAndLastDayByWeek, getNowDate } from "../../until/time";
+import axios from "axios";
 
 const state = reactive({
   // todo 在请求时变动 是否正在加载
   isLoading: false,
+  // 用于渲染的周数据
+  weekDataList: [],
+  // 当前的日期（用于获得更新和删除）
+  nowDate: ''
 })
+
+/**
+ * @description: 用户登出
+ * @param {*}
+ * @return {*}
+ */
+const userLoginout = () => {
+  storage.clearItem('bill_token')
+  goToPage('/login')
+}
+
+/**
+ * @description: 获得周的数据
+ * @param {*}
+ * @return {*}
+ */
+const getWeekData = async (startDay, lastDay, nowDate) => {
+  try {
+    state.nowDate = nowDate
+    const res = await httpGetPayDataByTimeAndType('', startDay, lastDay)
+
+    res.data ? state.weekDataList = res.data : null
+    console.log(state.weekDataList)
+  } catch (err) {
+    console.log(err)
+  }
+}
+
+/**
+ * @description: 获取当前时间并且请求数据
+ * @param {*}
+ * @return {*}
+ */
+const sendHttp = async () => {
+  try {
+    state.isLoading = true
+    // 获取周数据
+    let { startDay, lastDay } = getFirstAndLastDayByWeek(new Date(getNowDate())) 
+
+    await axios.all([
+      getWeekData(startDay, lastDay, getNowDate())
+    ])
+    state.isLoading = false
+  } catch (err) {
+    console.log(err)
+  }
+}
+
+sendHttp()
 </script>
 
 <style lang="scss" scoped>
@@ -137,11 +204,19 @@ const state = reactive({
 
     //　header
     .bill-system-header {
+      position: relative;
       height: 70px;
       padding-top: 30px;
 
       .bill-system-title-sec {
         width: 30%;
+      }
+
+      .bill-system-loginout {
+        position: absolute;
+        right: 10px;
+        bottom: 30px;
+        height: 20px;
       }
     }
 
@@ -191,5 +266,16 @@ const state = reactive({
 
 ::-webkit-scrollbar {
   display: none;
+}
+
+.submit-button {
+  display: block;
+  padding: 5px 15px;
+  border: 1px solid $color-5c;
+  border-radius: 5px;
+  font-size: 12px;
+  background-color: rgba(0, 0, 0, 0.3) !important;
+  color: $color-c3;
+  cursor: pointer;
 }
 </style>

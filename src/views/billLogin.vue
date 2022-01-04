@@ -1,7 +1,7 @@
 <!--
  * @Author: zxy
  * @Date: 2022-01-01 20:04:08
- * @LastEditTime: 2022-01-04 17:23:13
+ * @LastEditTime: 2022-01-04 21:26:28
  * @FilePath: /sku-bill-system/src/views/billLogin.vue
 -->
 <template>
@@ -180,8 +180,6 @@ const userReg = async () => {
           username: regFrom.username,
           password: regFrom.password
         })
-
-        console.log(res)
 
         if (res.status === 2000) {
           res.msg = 'ユーザー登録成功です'

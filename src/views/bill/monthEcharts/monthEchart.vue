@@ -1,7 +1,7 @@
 <!--
  * @Author: zxy
  * @Date: 2022-01-03 11:50:52
- * @LastEditTime: 2022-01-03 16:00:22
+ * @LastEditTime: 2022-01-04 18:05:27
  * @FilePath: /sku-bill-system/src/views/bill/monthEcharts/monthEchart.vue
 -->
 <template>
@@ -11,7 +11,7 @@
       <div class="flex-box-between-cneter">
         <div class="text-color-c3">
           <i class="iconfont icon-tongji2 font-size-16 text-color-5c"></i>
-          <span class="font-size-12 margrin-side-mini">当月开销</span>
+          <span class="font-size-12 margrin-side-mini">支出(月)</span>
         </div>
 
         <el-date-picker
@@ -32,7 +32,7 @@
       <!-- 开销笔数，开销总金额和预算 -->
       <div class="month-pay-box">
         <div class="pay-box flex-box-between-cneter">
-          <span>本月开销次数</span>
+          <span>当月支出回数</span>
           <dv-digital-flop
             :config="state.payConfig"
             class="text-box pay-number-box"
@@ -41,12 +41,12 @@
 
         <div class="flex-box-between-cneter pay-money-box-sec">
           <div class="pay-box pay-money-box">
-            <span>本月消费</span>
+            <span>当月支出</span>
             <dv-digital-flop :config="state.payMoneyConfig" class="text-box" />
           </div>
 
           <div class="pay-box pay-money-box">
-            <span>本月预算</span>
+            <span>预算</span>
             <dv-digital-flop
               :config="state.yosanMoneyConfig"
               class="text-box"

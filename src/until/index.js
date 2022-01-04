@@ -1,7 +1,7 @@
 /*
  * @Author: zxy
  * @Date: 2022-01-04 14:30:44
- * @LastEditTime: 2022-01-04 17:23:24
+ * @LastEditTime: 2022-01-04 20:27:06
  * @FilePath: /sku-bill-system/src/until/index.js
  */
 
@@ -29,10 +29,11 @@ import router from "../router";
 /**
  * @description: 返回请求时，弹出消息框
  * @param {object} obj 正常为 res
+ * @param {String} msg 成功时候的信息
  * @param {function} fn 需要执行的回执操作，可以为null
  * @return {*}
  */
- const returnMessage = (obj) => {
+ const returnMessage = (obj, msg) => {
   let funObj = {
     success: fn => {
       fn && fn()
@@ -46,7 +47,7 @@ import router from "../router";
 
   if (obj.status === 2000) {
     ElMessage({
-      message: obj.msg,
+      message: msg ? msg : obj.msg,
       type: 'success'
     })
 
@@ -70,7 +71,7 @@ import router from "../router";
  */
 const checkObjIsEmpty = (obj) => {
   for (let i in obj) {
-    if (!obj[i].trim()) {
+    if (!obj[i].toString().trim()) {
       return true
     }
   }
