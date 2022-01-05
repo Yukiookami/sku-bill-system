@@ -1,7 +1,7 @@
 <!--
  * @Author: zxy
  * @Date: 2022-01-01 21:28:20
- * @LastEditTime: 2022-01-04 21:26:01
+ * @LastEditTime: 2022-01-05 14:15:46
  * @FilePath: /sku-bill-system/src/views/bill/yearEcharts/yearEcharts.vue
 -->
 <template>
@@ -55,18 +55,30 @@ import { httpGetPayDataByTimeAndType } from "../../../request/pay/pay";
 const yearEchartsDoker = ref(null);
 const yearRingDorker = ref(null);
 
+const props = defineProps({
+  nowYear: Number,
+  showYear: Number
+})
+
+const emit = defineEmits([
+  'changeYear'
+])
+
 const state = reactive({
-  // 今年
-  nowYear: computed(() => {
-    const date = new Date();
-    return +date.getFullYear();
-  }),
   // 当前选择的时间
   showYear: 2022,
   // 当前显示的文字
   yaerText: "年次統計",
   // 是否选择时间
   pickYear: false,
+  // 年度折线图显示的时间表
+  category: [],
+  // 年度总消费
+  lineData: [],
+  // 年度生活开销
+  barData: [],
+  // 饼图
+  pieData: []
 });
 
 /**
@@ -77,6 +89,8 @@ const state = reactive({
 const changeYear = (flag) => {
   state.showYear += flag;
   state.pickYear = false;
+
+  emit('changeYear', state.showYear)
 };
 
 /**
@@ -88,25 +102,6 @@ const initYearRing = () => {
   const DomItem = yearRingDorker.value;
 
   const myChart = echarts.init(DomItem);
-
-  const data = [
-    {
-      name: "生活费",
-      value: 30,
-    },
-    {
-      name: "游戏",
-      value: 40,
-    },
-    {
-      name: "交通费",
-      value: 20,
-    },
-    {
-      name: "其他",
-      value: 10,
-    },
-  ]
 
   let option = {
     tooltip: {
@@ -137,7 +132,7 @@ const initYearRing = () => {
         labelLine: {
           show: false,
         },
-        data: data
+        data: state.pieData
       },
     ],
   };
@@ -154,34 +149,6 @@ const initYearEcharts = () => {
   const DomItem = yearEchartsDoker.value;
 
   const myChart = echarts.init(DomItem);
-
-  // Generate data
-  // 时间
-  let category = [
-    "2021-1",
-    "2021-2",
-    "2021-3",
-    "2021-4",
-    "2021-5",
-    "2021-6",
-    "2021-7",
-    "2021-8",
-    "2021-9",
-    "2021-10",
-    "2021-11",
-    "2021-12",
-  ];
-
-  // 总消费
-  let lineData = [
-    160000, 180000, 140000, 120000, 170000, 200000, 210000, 140000, 190000,
-    160000, 100000, 130000,
-  ];
-  // 生活开销
-  let barData = [
-    160000, 80000, 40000, 10000, 70000, 50000, 10000, 40000, 90000, 60000,
-    50000, 30000,
-  ];
 
   // option
   let option = {
@@ -212,7 +179,7 @@ const initYearEcharts = () => {
         show: false,
         interval: "0",
       },
-      data: category,
+      data: state.category,
       axisLine: {
         // show: false,
         lineStyle: {
@@ -237,7 +204,7 @@ const initYearEcharts = () => {
         showAllSymbol: true,
         symbol: "emptyCircle",
         symbolSize: 15,
-        data: lineData,
+        data: state.lineData,
       },
       {
         name: "生活費",
@@ -250,7 +217,7 @@ const initYearEcharts = () => {
             { offset: 1, color: "#43eec6" },
           ]),
         },
-        data: barData,
+        data: state.barData,
       },
       // {
       //   name: "bar",
@@ -279,7 +246,7 @@ const initYearEcharts = () => {
         symbolSize: [12, 4],
         symbolMargin: 1,
         z: -10,
-        data: lineData,
+        data: state.lineData,
       },
     ],
   };
@@ -288,34 +255,96 @@ const initYearEcharts = () => {
 };
 
 /**
+ * @description: 处理获得的年数据
+ * @param {*} data
+ * @return {*}
+ */
+const initYearData = (data) => {
+  // 饼图数据
+  let typeList = []
+  let series = []
+  // 折线图数据
+  state.lineData = [...new Array(12).fill(0)]
+  state.barData = [...new Array(12).fill(0)]
+
+  let cateCont = 0
+  state.category = state.lineData.map(ele => {
+    if (cateCont++ < 10) {
+      return `${props.showYear}-0${cateCont}`
+    } else {
+      return `${props.showYear}-${cateCont}`
+    }
+  }) 
+
+  let allData = state.lineData
+  let lifeData = state.barData
+
+  data.forEach(ele => {
+    let type = ele.type.split('/')[0]
+
+    // 折线图数据
+    let index = state.category.findIndex(item => {
+      return ele.payTime.slice(0, 7) === item
+    })
+
+    if (index !== -1) {
+      allData[index] += ele.payMoney
+
+      if (type === '生活費') {
+        lifeData[index] += ele.payMoney
+      }
+    }
+
+    // 饼图数据
+    if (typeList.some(item => item === type)) {
+      let index = series.findIndex(item => item.name === type)
+
+      series[index].value += ele.payMoney
+    } else {
+      typeList.push(type)
+      series.push({
+        name: type,
+        value: ele.payMoney
+      })
+    }
+  })
+
+  state.pieData = series
+
+  initYearEcharts()
+  initYearRing()
+}
+
+/**
  * @description: 获得一年的开销
  * @param {*}
  * @return {*}
  */
 const getDataInYear = async () => {
   try {
-    const res = await httpGetPayDataByTimeAndType('', `${state.showYear}-01-01`, `${state.showYear + 1}-01-01`)
+    const { data } = await httpGetPayDataByTimeAndType('', `${state.showYear}-01-01`, `${state.showYear + 1}-01-01`)
 
-    // console.log(res)
+    initYearData(data)
   } catch (err) {
     console.log(err)
   }
 } 
-
-state.showYear = state.nowYear;
-
-axios.all([
-  getDataInYear()
-])
 
 /**
  * @description: 监听年份变化
  * @param {*}
  * @return {*}
  */
-watch(() => state.showYear, val => {
+watch(() => props.showYear, val => {
+  state.showYear = val
   getDataInYear()
 })
+
+state.showYear = props.nowYear;
+
+axios.all([
+  getDataInYear()
+])
 
 onMounted(() => {
   initYearEcharts();

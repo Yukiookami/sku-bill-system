@@ -1,7 +1,7 @@
 <!--
  * @Author: zxy
  * @Date: 2022-01-01 19:42:03
- * @LastEditTime: 2022-01-05 13:34:37
+ * @LastEditTime: 2022-01-05 13:51:36
  * @FilePath: /sku-bill-system/src/views/bill/billSystem.vue
 -->
 <template>
@@ -41,7 +41,9 @@
           <div class="flex-box-between-cneter bill-system-first">
             <!-- 年统计图 -->
             <div class="bill-system-year-echart">
-              <YearEcharts></YearEcharts>
+              <YearEcharts :nowYear="state.nowYear"
+              :showYear="state.showYear"
+              @changeYear="changeYear"></YearEcharts>
             </div>
 
             <!-- 开销的操作 -->
@@ -92,7 +94,7 @@
 </template>
 
 <script setup>
-import { reactive } from "@vue/reactivity";
+import { computed, reactive } from "@vue/reactivity";
 // loading
 import IsLoading from "../../components/loading/isLoading.vue";
 // 年统计
@@ -116,10 +118,22 @@ import axios from "axios";
 const state = reactive({
   // todo 在请求时变动 是否正在加载
   isLoading: false,
+  // 年份数据请求
+  // 今年
+  nowYear: computed(() => {
+    const date = new Date();
+    return +date.getFullYear();
+  }),
+  // 当前选择的时间
+  showYear: 2022,
+  // 年份数据请求end
+
+  // 周数据请求
   // 用于渲染的周数据
   weekDataList: [],
   // 当前的日期（用于获得更新和删除）
   nowDate: ''
+  // 周数据请求end
 })
 
 /**
@@ -148,6 +162,15 @@ const getWeekData = async (startDay, lastDay, nowDate) => {
   } catch (err) {
     console.log(err)
   }
+}
+
+/**
+ * @description: 更改年份
+ * @param {*}
+ * @return {*}
+ */
+const changeYear = (year) => {
+  state.showYear = year
 }
 
 /**
