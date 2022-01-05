@@ -1,7 +1,7 @@
 <!--
  * @Author: zxy
  * @Date: 2022-01-01 19:42:03
- * @LastEditTime: 2022-01-05 16:21:15
+ * @LastEditTime: 2022-01-05 17:06:58
  * @FilePath: /sku-bill-system/src/views/bill/billSystem.vue
 -->
 <template>
@@ -30,8 +30,16 @@
             </div>
             <dv-decoration-10 class="dv-dec-10-s" />
 
-            <div class="bill-system-loginout" @click="userLoginout">
-              <div class="submit-button">
+            <div class="bill-system-loginout">
+              <!-- <div class="text-magic" :data-word="state.username">
+                {{ state.username }}
+                <div class="white"></div>
+              </div> -->
+              <div class="name-box">
+                <span class="hover">{{ state.username }}</span>
+              </div>
+
+              <div class="submit-button" @click="userLoginout">
                 <i class="iconfont icon-diagnose text-color-5c"></i>
                 ログアウト
               </div>
@@ -208,7 +216,7 @@ const getWeekData = async (startDay, lastDay, nowDate, falg) => {
  */
 const changeYear = (year) => {
   if (state.showYear !== year) {
-    state.showYear = year
+    state.showYear = +year
     getDataInYear()
   }
 }
@@ -303,6 +311,7 @@ sendHttp()
 <style lang="scss" scoped>
 @import '../../assets/css/common.scss';
 @import '../../assets/css/index.scss';
+@import '../../assets/css/anime.scss';
 
 .bill-system-main {
   overflow-x: hidden;
@@ -407,5 +416,13 @@ sendHttp()
   background-color: rgba(0, 0, 0, 0.3) !important;
   color: $color-c3;
   cursor: pointer;
+}
+
+.name-box {
+  position: absolute;
+  top: 8px;
+  color: $color-5c;
+  left: -95px;
+  font-weight: 700;
 }
 </style>

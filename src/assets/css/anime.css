@@ -1,0 +1,267 @@
+@import url("https://fonts.googleapis.com/css2?family=Bangers&family=Homemade+Apple&family=Sacramento&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Reggae+One&display=swap");
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.user-select-no {
+  user-select: none;
+}
+
+.flex-box-between-cneter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.flex-box-center-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.flex-box-y-center {
+  display: flex;
+  align-items: center;
+}
+
+.flex-box-x-end {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.flex-box-between-start {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.flex-box-column-between-cneter {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-direction: column;
+}
+
+.margin-top-mini {
+  margin-top: 5px;
+}
+
+.margrin-side-mini {
+  margin: 0 5px;
+}
+
+.margrin-side-nom {
+  margin: 0 15px;
+}
+
+.margrin-side-big {
+  margin: 0 25px;
+}
+
+.margrin-bottom-nom {
+  margin-bottom: 15px;
+}
+
+.margrin-left-nom {
+  margin-left: 15px;
+}
+
+.padding-side-mini {
+  padding: 0 5px;
+}
+
+.text-color-w {
+  color: #c3cbde;
+}
+
+.text-color-c3 {
+  color: #c3cbde;
+}
+
+.text-color-5c {
+  color: #5cd9e8;
+}
+
+.text-color-25 {
+  color: #257dff;
+}
+
+.font-size-20 {
+  font-size: 20px;
+}
+
+.font-size-18 {
+  font-size: 18px;
+}
+
+.font-size-16 {
+  font-size: 16px;
+}
+
+.font-size-14 {
+  font-size: 14px;
+}
+
+.font-size-12 {
+  font-size: 12px;
+}
+
+.font-bold {
+  font-weight: 700;
+}
+
+.text-magic {
+  position: absolute;
+  top: 15px;
+  left: -65px;
+  transform: translate(-50%, -50%) scale(2.4);
+  width: 60px;
+  font-size: 10px;
+  color: #fff;
+}
+
+.text-magic::before {
+  content: attr(data-word);
+  position: absolute;
+  top: 0;
+  left: 0.5px;
+  height: 0px;
+  color: #5cd9e8;
+  opacity: .8;
+  overflow: hidden;
+  z-index: 2;
+  animation: redShadow 1s ease-in infinite;
+  filter: contrast(200%);
+  text-shadow: 1px 0 0 red;
+}
+
+.text-magic::after {
+  content: attr(data-word);
+  position: absolute;
+  top: 0;
+  left: 0px;
+  height: 36px;
+  color: #5cd9e8;
+  opacity: .7;
+  overflow: hidden;
+  z-index: 3;
+  background: rgba(0, 0, 0, 0.9);
+  animation: redHeight 1.5s ease-out infinite;
+  filter: contrast(200%);
+  text-shadow: -1px 0 0 cyan;
+  mix-blend-mode: darken;
+}
+
+@keyframes redShadow {
+  20% {
+    height: 32px;
+  }
+  60% {
+    height: 6px;
+  }
+  100% {
+    height: 42px;
+  }
+}
+
+@keyframes redHeight {
+  20% {
+    height: 42px;
+  }
+  35% {
+    height: 12px;
+  }
+  50% {
+    height: 40px;
+  }
+  60% {
+    height: 20px;
+  }
+  70% {
+    height: 34px;
+  }
+  80% {
+    height: 22px;
+  }
+  100% {
+    height: 0px;
+  }
+}
+
+@keyframes whiteMove {
+  8% {
+    top: 38px;
+  }
+  14% {
+    top: 8px;
+  }
+  20% {
+    top: 42px;
+  }
+  32% {
+    top: 2px;
+  }
+  99% {
+    top: 30px;
+  }
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  font-family: "Bangers", cursive;
+  background: #000;
+}
+
+svg {
+  width: 100px;
+  height: 30px;
+  margin: auto;
+}
+
+svg text {
+  text-transform: uppercase;
+  animation: stroke 5s infinite alternate;
+  letter-spacing: 10px;
+  font-size: 12px;
+}
+
+@keyframes stroke {
+  0% {
+    fill: rgba(72, 138, 20, 0);
+    stroke: #365fa0;
+    stroke-dashoffset: 25%;
+    stroke-dasharray: 0 50%;
+    stroke-width: 0.8;
+  }
+  50% {
+    fill: rgba(72, 138, 20, 0);
+    stroke: #365fa0;
+    stroke-width: 1.2;
+  }
+  70% {
+    fill: rgba(72, 138, 20, 0);
+    stroke: #365fa0;
+    stroke-width: 1.5;
+  }
+  90%,
+  100% {
+    fill: #488acc;
+    stroke: rgba(54, 95, 160, 0);
+    stroke-dashoffset: -25%;
+    stroke-dasharray: 50% 0;
+    stroke-width: 0;
+  }
+}
+
+.hover {
+  text-shadow: unset;
+  transition: .2s;
+  cursor: pointer;
+}
+
+.hover:hover {
+  text-shadow: 0 0 10px #0ebeff, 0 0 20px #0ebeff, 0 0 50px #0ebeff, 0 0 100px #0ebeff, 0 0 200px #0ebeff;
+}
