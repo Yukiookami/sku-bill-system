@@ -1,7 +1,7 @@
 <!--
  * @Author: zxy
  * @Date: 2022-01-02 17:24:25
- * @LastEditTime: 2022-01-05 13:37:12
+ * @LastEditTime: 2022-01-05 14:53:12
  * @FilePath: /sku-bill-system/src/views/bill/pay/addNewPay.vue
 -->
 <template>
@@ -103,8 +103,14 @@ import { getCurrentWeekFirstDay, getCurrentWeekLastDay, getFirstAndLastDayByWeek
 
 const emit = defineEmits([
   // 获得周数据
-  'getWeekData'
+  'getWeekData',
+  // 更改预算
+  'changeYosan'
 ])
+
+const props = defineProps({
+  yosan: Number
+})
 
 const state = reactive({
   // 予算
@@ -344,14 +350,10 @@ const yosanAdd = async () => {
     if (state.yosan < 0) {
       ElMessage.warning('予算は最低0以上です')
     } else {
-      const res = await httpEditBudget({
-        budget: state.yosan
-      })
-
-      console.log(res)
+      const res = await httpEditBudget(state.yosan)
 
       returnMessage(res, '予算登録しました').success(() => {
-        state.yosan = res.data
+        emit('changeYosan', res.data)
       })
     }
   } catch (err) {
@@ -380,8 +382,17 @@ watch(() => store.state.nowEditData, (val) => {
   }
 })
 
+/**
+ * @description: 监听预算修改
+ * @param {*}
+ * @return {*}
+ */
+watch(() => props.yosan, val => {
+  state.yosan = val
+})
 
 initNowDate()
+state.yosan = props.yosan
 </script>
 
 <style lang="scss" scoped>

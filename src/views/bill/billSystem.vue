@@ -1,7 +1,7 @@
 <!--
  * @Author: zxy
  * @Date: 2022-01-01 19:42:03
- * @LastEditTime: 2022-01-05 13:51:36
+ * @LastEditTime: 2022-01-05 14:57:01
  * @FilePath: /sku-bill-system/src/views/bill/billSystem.vue
 -->
 <template>
@@ -43,13 +43,17 @@
             <div class="bill-system-year-echart">
               <YearEcharts :nowYear="state.nowYear"
               :showYear="state.showYear"
+              :yearData="state.yearData"
               @changeYear="changeYear"></YearEcharts>
             </div>
 
             <!-- 开销的操作 -->
             <div class="bill-system-add-new-pay">
               <dv-border-box-1>
-                <AddNewPay @getWeekData="getWeekData"></AddNewPay>
+                <AddNewPay 
+                :yosan="state.yosan"
+                @getWeekData="getWeekData"
+                @changeYosan="changeYosan"></AddNewPay>
               </dv-border-box-1>
             </div>
 
@@ -67,7 +71,7 @@
             <!-- 月开销 -->
             <div class="bill-system-month-echart">
               <dv-border-box-13>
-                <MonthEchart></MonthEchart>
+                <MonthEchart :yosan="state.yosan"></MonthEchart>
               </dv-border-box-13>
             </div>
 
@@ -114,8 +118,11 @@ import { goToPage } from "../../until";
 import { httpGetPayDataByTimeAndType } from "../../request/pay/pay";
 import { getFirstAndLastDayByWeek, getNowDate } from "../../until/time";
 import axios from "axios";
+import { httpGetUserInfo } from "../../request/user/user";
 
 const state = reactive({
+  userId: '',
+  username: '',
   // todo 在请求时变动 是否正在加载
   isLoading: false,
   // 年份数据请求
@@ -126,14 +133,18 @@ const state = reactive({
   }),
   // 当前选择的时间
   showYear: 2022,
+  yearData: [],
   // 年份数据请求end
 
   // 周数据请求
   // 用于渲染的周数据
   weekDataList: [],
   // 当前的日期（用于获得更新和删除）
-  nowDate: ''
+  nowDate: '',
   // 周数据请求end
+
+  // 预算
+  yosan: 0
 })
 
 /**
@@ -143,7 +154,17 @@ const state = reactive({
  */
 const userLoginout = () => {
   storage.clearItem('bill_token')
+  storage.clearItem('user_info')
   goToPage('/login')
+}
+
+/**
+ * @description: 修改预算
+ * @param {*}
+ * @return {*}
+ */
+const changeYosan = (data) => {
+  state.yosan = data
 }
 
 /**
@@ -153,12 +174,10 @@ const userLoginout = () => {
  */
 const getWeekData = async (startDay, lastDay, nowDate) => {
   try {
-    console.log(nowDate)
     state.nowDate = nowDate
     const res = await httpGetPayDataByTimeAndType('', startDay, lastDay)
 
     res.data ? state.weekDataList = res.data : null
-    console.log(state.weekDataList)
   } catch (err) {
     console.log(err)
   }
@@ -171,6 +190,42 @@ const getWeekData = async (startDay, lastDay, nowDate) => {
  */
 const changeYear = (year) => {
   state.showYear = year
+  getDataInYear()
+}
+
+/**
+ * @description: 获得一年的开销
+ * @param {*}
+ * @return {*}
+ */
+const getDataInYear = async () => {
+  try {
+    const { data } = await httpGetPayDataByTimeAndType('', `${state.nowYear}-01-01`, `${state.nowYear + 1}-01-01`)
+
+    state.yearData = data
+  } catch (err) {
+    console.log(err)
+  }
+} 
+
+/**
+ * @description: 获得当前userinfo
+ * @param {*}
+ * @return {*}
+ */
+const getNowUser = async () => {
+  try {
+    const { userId, username } = storage.getItem('user_info')
+    
+    state.userId = userId
+    state.username = username
+
+    const { data } = await httpGetUserInfo(userId)
+
+    state.yosan = data.budget
+  } catch (err) {
+    console.log(err)
+  }
 }
 
 /**
@@ -185,7 +240,9 @@ const sendHttp = async () => {
     let { startDay, lastDay } = getFirstAndLastDayByWeek(new Date(getNowDate())) 
 
     await axios.all([
-      getWeekData(startDay, lastDay, getNowDate())
+      getWeekData(startDay, lastDay, getNowDate()),
+      getDataInYear(),
+      getNowUser()
     ])
     state.isLoading = false
   } catch (err) {

@@ -1,7 +1,7 @@
 /*
  * @Author: zxy
  * @Date: 2022-01-01 20:05:02
- * @LastEditTime: 2022-01-04 21:40:36
+ * @LastEditTime: 2022-01-05 14:40:20
  * @FilePath: /sku-bill-system/src/request/request.js
  */
 import axios from "axios";
@@ -46,6 +46,7 @@ export function request(option) {
     } else if (status === false) {
       // token过期 
       storage.clearItem('bill_token')
+      storage.clearItem('user_info')
       router.push('/login')
       return Promise.reject(msg)
     } else {

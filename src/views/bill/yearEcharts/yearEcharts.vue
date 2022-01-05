@@ -1,7 +1,7 @@
 <!--
  * @Author: zxy
  * @Date: 2022-01-01 21:28:20
- * @LastEditTime: 2022-01-05 14:15:46
+ * @LastEditTime: 2022-01-05 14:26:52
  * @FilePath: /sku-bill-system/src/views/bill/yearEcharts/yearEcharts.vue
 -->
 <template>
@@ -57,7 +57,8 @@ const yearRingDorker = ref(null);
 
 const props = defineProps({
   nowYear: Number,
-  showYear: Number
+  showYear: Number,
+  yearData: Array
 })
 
 const emit = defineEmits([
@@ -320,35 +321,30 @@ const initYearData = (data) => {
  * @param {*}
  * @return {*}
  */
-const getDataInYear = async () => {
-  try {
-    const { data } = await httpGetPayDataByTimeAndType('', `${state.showYear}-01-01`, `${state.showYear + 1}-01-01`)
+// const getDataInYear = async () => {
+//   try {
+//     const { data } = await httpGetPayDataByTimeAndType('', `${state.showYear}-01-01`, `${state.showYear + 1}-01-01`)
 
-    initYearData(data)
-  } catch (err) {
-    console.log(err)
-  }
-} 
+//     initYearData(data)
+//   } catch (err) {
+//     console.log(err)
+//   }
+// } 
 
 /**
- * @description: 监听年份变化
+ * @description: 监听年数据变化
  * @param {*}
  * @return {*}
  */
-watch(() => props.showYear, val => {
-  state.showYear = val
-  getDataInYear()
+watch(() => props.yearData, val => {
+  state.showYear = props.showYear
+  initYearData(val)
 })
 
 state.showYear = props.nowYear;
 
-axios.all([
-  getDataInYear()
-])
-
 onMounted(() => {
-  initYearEcharts();
-  initYearRing();
+  initYearData(props.yearData)
 });
 </script>
 

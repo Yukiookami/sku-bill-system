@@ -1,7 +1,7 @@
 <!--
  * @Author: zxy
  * @Date: 2022-01-01 20:04:08
- * @LastEditTime: 2022-01-04 21:26:28
+ * @LastEditTime: 2022-01-05 14:39:56
  * @FilePath: /sku-bill-system/src/views/billLogin.vue
 -->
 <template>
@@ -150,6 +150,7 @@ const userLogin = async () => {
       }
 
       returnMessage(res).success(() => {
+        storage.setItem('user_info', res.data)
         storage.setItem('bill_token', res.data.token)
         goToPage('/bill')
       })
