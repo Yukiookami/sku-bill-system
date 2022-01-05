@@ -1,7 +1,7 @@
 /*
  * @Author: zxy
  * @Date: 2022-01-01 19:42:03
- * @LastEditTime: 2022-01-05 17:19:59
+ * @LastEditTime: 2022-01-05 17:33:11
  * @FilePath: /sku-bill-system/src/router/index.js
  */
 import { createRouter, createWebHashHistory, createWebHistory } from 'vue-router'
@@ -15,7 +15,7 @@ let routes = [
     name: '404',
     component: () => import('../views/404NotFind.vue'),
     meta: {
-      title: '出错啦！'
+      title: '404！'
     }
   },
   {

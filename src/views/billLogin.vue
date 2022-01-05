@@ -1,7 +1,7 @@
 <!--
  * @Author: zxy
  * @Date: 2022-01-01 20:04:08
- * @LastEditTime: 2022-01-05 14:39:56
+ * @LastEditTime: 2022-01-05 18:31:18
  * @FilePath: /sku-bill-system/src/views/billLogin.vue
 -->
 <template>
@@ -150,6 +150,7 @@ const userLogin = async () => {
       }
 
       returnMessage(res).success(() => {
+        storage.setItem('remberName', res.data.username)
         storage.setItem('user_info', res.data)
         storage.setItem('bill_token', res.data.token)
         goToPage('/bill')
@@ -223,6 +224,8 @@ onBeforeUnmount(() => {
 // 如果存在token就不停留在这个页面
 if (storage.getItem('bill_token')) {
   goToPage('/bill')
+} else {
+  loginForm.username = storage.getItem('remberName')
 }
 </script>
 
