@@ -1,7 +1,7 @@
 <!--
  * @Author: zxy
  * @Date: 2022-01-03 17:03:47
- * @LastEditTime: 2022-01-04 18:01:01
+ * @LastEditTime: 2022-01-05 13:26:20
  * @FilePath: /sku-bill-system/src/views/bill/weekEcharts/weekTypeEchart.vue
 -->
 <template>
@@ -26,10 +26,49 @@
 
 <script setup>
 import { reactive, ref } from "@vue/reactivity";
-import { onMounted } from "@vue/runtime-core";
+import { onMounted, watch } from "@vue/runtime-core";
 import * as echarts from "echarts";
 
 const weekTypeChart = ref(null)
+
+const props = defineProps({
+  weekDataList: Array
+})
+
+const state = reactive({
+  seriesData: [],
+  xData: []
+})
+
+/**
+ * @description: 初始化饼图的数据
+ * @param {*}
+ * @return {*}
+ */
+const initPieData = (data) => {
+  let typeList = []
+  let series = []
+
+  data.forEach(ele => {
+    let oyaType = ele.type.split('/')[0]
+    let type = oyaType === 'その他' ? oyaType : ele.type.split('/')[1]
+
+    if (typeList.some(item => item === type)) {
+      let index = series.findIndex(item => item.name === type)
+
+      series[index].value += ele.payMoney
+    } else {
+      typeList.push(type)
+      series.push({
+        name: type,
+        value: ele.payMoney
+      })
+    }
+  })
+
+  state.seriesData = series
+  state.xData = typeList
+}
 
 /**
  * @description: 初始化饼图
@@ -39,17 +78,6 @@ const weekTypeChart = ref(null)
 const initWeekTypeEchart = () => {
   const chartDom = weekTypeChart.value;
   const myChart = echarts.init(chartDom);
-
-  let seriesData = [
-    { value: 10, name: '数据1' },
-    { value: 5, name: '数据2' },
-    { value: 15, name: '数据3' },
-    { value: 25, name: '数据4' },
-    { value: 20, name: '数据5' },
-    { value: 35, name: '数据6' }
-  ]
-
-  let xData = ['数据1', '数据2', '数据3', '数据4', '数据5', '数据6']
 
   let option = {
     color: [
@@ -75,7 +103,7 @@ const initWeekTypeEchart = () => {
       icon: 'circle',
       bottom: 0,
       x: 'center',
-      data: xData,
+      data: state.xData,
       textStyle: {
         color: '#fff'
       }
@@ -84,6 +112,7 @@ const initWeekTypeEchart = () => {
       {
         name: '通过率统计',
         type: 'pie',
+        stillShowZeroSum: false,
         radius: [10, 50],
         roseType: 'area',
         center: ['50%', '40%'],
@@ -99,13 +128,22 @@ const initWeekTypeEchart = () => {
             show: false
           }
         },
-        data: seriesData
+        data: state.seriesData
       }
     ]
   }
 
   option && myChart.setOption(option);
 }
+
+// 监听周数据变化
+watch(() => props.weekDataList, val => {
+  initPieData(val)
+  initWeekTypeEchart()
+})
+
+// 初始化数据
+initPieData(props.weekDataList)
 
 onMounted(() => {
   initWeekTypeEchart()

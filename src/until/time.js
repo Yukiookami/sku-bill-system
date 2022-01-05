@@ -1,7 +1,7 @@
 /*
  * @Author: zxy
  * @Date: 2022-01-04 20:42:27
- * @LastEditTime: 2022-01-04 23:44:35
+ * @LastEditTime: 2022-01-05 13:30:40
  * @FilePath: /sku-bill-system/src/until/time.js
  */
 /**
@@ -86,14 +86,14 @@ const getDateByDayFor7 = (date) => {
   let time = new Date(base);
 
 
-  let month = time.getMonth()
+  let month = time.getMonth() + 1
   let day = time.getDate()
 
-  if (month.length !== 2) {
-    month = 0 + (month + 1).toString()
+  if (month.toString().length !== 2) {
+    month = 0 + month.toString()
   }
 
-  if (day.length !== 2) {
+  if (day.toString().length !== 2) {
     day = 0 + day.toString()
   }
 
@@ -101,14 +101,14 @@ const getDateByDayFor7 = (date) => {
   for (let i = 1; i <7; i++) {
     let now = new Date(base += oneDay);
 
-    let month = now.getMonth()
+    let month = now.getMonth() + 1
     let day = now.getDate()
 
-    if (month.length !== 2) {
-      month = 0 + (month + 1).toString()
+    if (month.toString().length !== 2) {
+      month = 0 + month.toString()
     }
-
-    if (day.length !== 2) {
+  
+    if (day.toString().length !== 2) {
       day = 0 + day.toString()
     }
 

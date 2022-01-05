@@ -1,7 +1,7 @@
 <!--
  * @Author: zxy
  * @Date: 2022-01-01 19:42:03
- * @LastEditTime: 2022-01-04 23:06:44
+ * @LastEditTime: 2022-01-05 13:34:37
  * @FilePath: /sku-bill-system/src/views/bill/billSystem.vue
 -->
 <template>
@@ -80,7 +80,8 @@
             <div class="bill-system-week-echart">
               <dv-border-box-12>
                 <WeekEcharts :weekDataList="state.weekDataList"
-                :nowDate="state.nowDate"></WeekEcharts>
+                :nowDate="state.nowDate"
+                @getWeekData="getWeekData"></WeekEcharts>
               </dv-border-box-12>
             </div>
           </div>
@@ -138,6 +139,7 @@ const userLoginout = () => {
  */
 const getWeekData = async (startDay, lastDay, nowDate) => {
   try {
+    console.log(nowDate)
     state.nowDate = nowDate
     const res = await httpGetPayDataByTimeAndType('', startDay, lastDay)
 

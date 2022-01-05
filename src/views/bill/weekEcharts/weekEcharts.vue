@@ -1,7 +1,7 @@
 <!--
  * @Author: zxy
  * @Date: 2022-01-03 15:44:21
- * @LastEditTime: 2022-01-04 23:38:58
+ * @LastEditTime: 2022-01-05 13:36:47
  * @FilePath: /sku-bill-system/src/views/bill/weekEcharts/weekEcharts.vue
 -->
 <template>
@@ -41,9 +41,13 @@
 import { reactive, ref } from "@vue/reactivity";
 import { onMounted, watch } from "@vue/runtime-core";
 import * as echarts from "echarts";
-import { getCurrentWeekFirstDay, getDateByDayFor7 } from "../../../until/time";
+import { getCurrentWeekFirstDay, getDateByDayFor7, getFirstAndLastDayByWeek } from "../../../until/time";
 
 const weekEchart = ref(null);
+
+const emit = defineEmits([
+  'getWeekData'
+])
 
 const props = defineProps({
   weekDataList: Array,
@@ -185,7 +189,9 @@ const initNowDate = () => {
  * @return {*}
  */
 const chooseDay = (e) => {
-  state.nowYear = e.slice(0, 4)
+  let { startDay, lastDay } = getFirstAndLastDayByWeek(new Date(e))
+
+  emit('getWeekData', startDay, lastDay, e)
 };
 
 /**
@@ -200,8 +206,6 @@ const initEchartDataByWeek = (data, time) => {
     let firstDay = getCurrentWeekFirstDay(new Date(time))
 
     let dateArr = getDateByDayFor7(firstDay)
-    console.log(data)
-    console.log(dateArr)
 
     data.forEach(ele => {
       let index = dateArr.findIndex(item => ele.payTime.slice(0, 10) === item)
@@ -218,12 +222,15 @@ const initEchartDataByWeek = (data, time) => {
 // 监听周数据变动
 watch(() => props.weekDataList, val => {
   initEchartDataByWeek(val, props.nowDate)
+  initWeekEchart()
 })
 
 // 监听时间变动
 watch(() => props.nowDate, val => {
   state.nowTime = val
-  chooseDay(val)
+
+  let { lastDay } = getFirstAndLastDayByWeek(new Date(val))
+  state.nowYear = lastDay.slice(0, 4)
 })
 
 // 初始化周数据

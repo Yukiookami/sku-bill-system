@@ -1,7 +1,7 @@
 <!--
  * @Author: zxy
  * @Date: 2022-01-02 17:24:25
- * @LastEditTime: 2022-01-04 22:55:45
+ * @LastEditTime: 2022-01-05 13:37:12
  * @FilePath: /sku-bill-system/src/views/bill/pay/addNewPay.vue
 -->
 <template>
@@ -314,9 +314,9 @@ const newPay = async (flag) => {
         // 获得该日期对应周的第一天和最后一天
         let { startDay, lastDay } = getFirstAndLastDayByWeek(new Date(formData.payTime))
 
-        initData()
-
         emit('getWeekData', startDay, lastDay, formData.payTime)
+        
+        initData()
       })
     }
   } catch (err) {
