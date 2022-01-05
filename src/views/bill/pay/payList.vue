@@ -1,7 +1,7 @@
 <!--
  * @Author: zxy
  * @Date: 2022-01-02 18:49:00
- * @LastEditTime: 2022-01-04 23:43:58
+ * @LastEditTime: 2022-01-05 16:20:31
  * @FilePath: /sku-bill-system/src/views/bill/pay/payList.vue
 -->
 <template>
@@ -115,7 +115,6 @@ const editItem = (obj) => {
 
 // 监听周数据的变动
 watch(() => props.weekDataList, val => {
-  console.log(val)
   state.payList = val
 })
 

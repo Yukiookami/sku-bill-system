@@ -1,7 +1,7 @@
 <!--
  * @Author: zxy
  * @Date: 2022-01-03 11:50:52
- * @LastEditTime: 2022-01-04 18:05:27
+ * @LastEditTime: 2022-01-05 16:08:08
  * @FilePath: /sku-bill-system/src/views/bill/monthEcharts/monthEchart.vue
 -->
 <template>
@@ -15,6 +15,7 @@
         </div>
 
         <el-date-picker
+          :clearable="false"
           :default-value="new Date()"
           style="width: 105px; margin-top: 10px"
           value-format="YYYY-MM-DD"
@@ -67,42 +68,32 @@
 
 <script setup>
 import { reactive, ref } from "@vue/reactivity";
-import { onMounted } from "@vue/runtime-core";
+import { onMounted, watch } from "@vue/runtime-core";
 import * as echarts from "echarts";
+import { getFirstAndLastDayByMonth } from "../../../until/time";
 
 const monthPayYosan = ref(null);
+
+const props = defineProps({
+  yosan: Number,
+  monthDataList: Array,
+  nowDate: String
+})
+
+const emit = defineEmits([
+  'getMonthData'
+])
 
 const state = reactive({
   // 当前月份
   nowTime: "",
   // 配置进度条
   config: {
-    data: [
-      {
-        name: "電子機器",
-        value: 30,
-      },
-      {
-        name: "PC",
-        value: 20,
-      },
-      {
-        name: "食事",
-        value: 15,
-      },
-      {
-        name: "課金",
-        value: 20,
-      },
-      {
-        name: "生活用品",
-        value: 5,
-      },
-    ],
+    data: [],
   },
   // 配置开销笔数
   payConfig: {
-    number: [10],
+    number: [0],
     content: "{nt}",
     style: {
       fontSize: 18,
@@ -156,7 +147,9 @@ const initNowDate = () => {
  * @return {*}
  */
 const chooseDay = (e) => {
-  console.log(e);
+  const { startDay, lastDay } = getFirstAndLastDayByMonth(new Date(e))
+  
+  emit('getMonthData', startDay, lastDay, e, true)
 };
 
 /**
@@ -220,10 +213,79 @@ const initYosanEcharts = () => {
   option && myChart.setOption(option);
 };
 
+/**
+ * @description: 初始化预算
+ * @param {*}
+ * @return {*}
+ */
+const initYosanBord = (val) => {
+  state.yosanMoneyConfig.number[0] = val / 10000
+
+  state.yosanMoneyConfig = {...state.yosanMoneyConfig}
+}
+
+/**
+ * @description: 初始化面板
+ * @param {*}
+ * @return {*}
+ */
+const initNumberBord = (data) => {
+  // 数字面板数据
+  let monthPayMoney = 0
+  let payCount = data.length
+
+  // 类型数据
+  let typeList = []
+  let series = []
+
+  // 生成类型数据
+  data.forEach(ele => {
+    monthPayMoney += ele.payMoney
+
+    let oyaType = ele.type.split('/')[0]
+    let type = oyaType === 'その他' ? oyaType : ele.type.split('/')[1]
+
+    if (typeList.some(item => item === type)) {
+      let index = series.findIndex(item => item.name === type)
+
+      series[index].value += ele.payMoney
+    } else {
+      typeList.push(type)
+      series.push({
+        name: type,
+        value: ele.payMoney
+      })
+    }
+  })
+
+  state.config.data = series
+  state.config = {...state.config}
+
+  state.payConfig.number[0] = payCount
+  state.payConfig = {...state.payConfig} 
+
+  state.payMoneyConfig.number[0] = monthPayMoney / 10000
+  state.payMoneyConfig = {...state.payMoneyConfig} 
+
+  state.nowTime = props.nowDate
+
+  initYosanEcharts()
+}
+
+// 监听预算
+watch(() => props.yosan, val => {
+  initYosanBord(val)
+})
+// 监听月数据
+watch(() => props.monthDataList, val => {
+  initNumberBord(val)
+})
+
 initNowDate();
+initYosanBord(props.yosan)
 
 onMounted(() => {
-  initYosanEcharts()
+  initNumberBord(props.monthDataList)
 })
 </script>
 

@@ -1,7 +1,7 @@
 <!--
  * @Author: zxy
  * @Date: 2022-01-01 19:42:03
- * @LastEditTime: 2022-01-05 14:57:01
+ * @LastEditTime: 2022-01-05 16:21:15
  * @FilePath: /sku-bill-system/src/views/bill/billSystem.vue
 -->
 <template>
@@ -71,7 +71,12 @@
             <!-- 月开销 -->
             <div class="bill-system-month-echart">
               <dv-border-box-13>
-                <MonthEchart :yosan="state.yosan"></MonthEchart>
+                <MonthEchart 
+                :nowDate="state.nowDate"
+                @getMonthData="getMonthData"
+                :monthDataList="state.monthDataList"
+                :yosan="state.yosan"
+                ></MonthEchart>
               </dv-border-box-13>
             </div>
 
@@ -116,7 +121,7 @@ import WeekEcharts from "./weekEcharts/weekEcharts.vue";
 import storage from "../../until/storage";
 import { goToPage } from "../../until";
 import { httpGetPayDataByTimeAndType } from "../../request/pay/pay";
-import { getFirstAndLastDayByWeek, getNowDate } from "../../until/time";
+import { getFirstAndLastDayByMonth, getFirstAndLastDayByWeek, getNowDate } from "../../until/time";
 import axios from "axios";
 import { httpGetUserInfo } from "../../request/user/user";
 
@@ -142,6 +147,10 @@ const state = reactive({
   // 当前的日期（用于获得更新和删除）
   nowDate: '',
   // 周数据请求end
+
+  // 月数据请求
+  monthDataList: [],
+  // 月数据end
 
   // 预算
   yosan: 0
@@ -172,12 +181,21 @@ const changeYosan = (data) => {
  * @param {*}
  * @return {*}
  */
-const getWeekData = async (startDay, lastDay, nowDate) => {
+const getWeekData = async (startDay, lastDay, nowDate, falg) => {
   try {
     state.nowDate = nowDate
     const res = await httpGetPayDataByTimeAndType('', startDay, lastDay)
 
     res.data ? state.weekDataList = res.data : null
+
+    // 更新月数据
+    if (falg) {
+      let { startDay: monthStarDay, lastDay: monthLastDay } = getFirstAndLastDayByMonth(new Date(nowDate))
+
+      changeYear(nowDate.slice(0, 4))
+
+      getMonthData(monthStarDay, monthLastDay, nowDate)
+    }
   } catch (err) {
     console.log(err)
   }
@@ -189,8 +207,10 @@ const getWeekData = async (startDay, lastDay, nowDate) => {
  * @return {*}
  */
 const changeYear = (year) => {
-  state.showYear = year
-  getDataInYear()
+  if (state.showYear !== year) {
+    state.showYear = year
+    getDataInYear()
+  }
 }
 
 /**
@@ -200,7 +220,7 @@ const changeYear = (year) => {
  */
 const getDataInYear = async () => {
   try {
-    const { data } = await httpGetPayDataByTimeAndType('', `${state.nowYear}-01-01`, `${state.nowYear + 1}-01-01`)
+    const { data } = await httpGetPayDataByTimeAndType('', `${state.showYear}-01-01`, `${state.showYear + 1}-01-01`)
 
     state.yearData = data
   } catch (err) {
@@ -229,6 +249,30 @@ const getNowUser = async () => {
 }
 
 /**
+ * @description: 获得月数据
+ * @param {*}
+ * @return {*}
+ */
+const getMonthData = async (startDay, lastDay, nowData, falg) => {
+  try {
+    state.nowDate = nowData
+    const { data } = await httpGetPayDataByTimeAndType('', startDay, lastDay)
+
+    state.monthDataList = data
+
+    if (falg) {
+      const { startDay: weekStarDay, lastDay: weekLastDay } = getFirstAndLastDayByWeek(new Date(nowData)) 
+  
+      changeYear(nowData.slice(0, 4))
+
+      getWeekData(weekStarDay, weekLastDay, nowData)
+    }
+  } catch (err) {
+    console.log(err)
+  }
+}
+
+/**
  * @description: 获取当前时间并且请求数据
  * @param {*}
  * @return {*}
@@ -238,11 +282,14 @@ const sendHttp = async () => {
     state.isLoading = true
     // 获取周数据
     let { startDay, lastDay } = getFirstAndLastDayByWeek(new Date(getNowDate())) 
+    // 获得月数据
+    let { startDay: monthStarDay, lastDay: monthLastDay } = getFirstAndLastDayByMonth(new Date(getNowDate()))
 
     await axios.all([
       getWeekData(startDay, lastDay, getNowDate()),
       getDataInYear(),
-      getNowUser()
+      getNowUser(),
+      getMonthData(monthStarDay, monthLastDay, getNowDate())
     ])
     state.isLoading = false
   } catch (err) {

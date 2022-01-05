@@ -1,7 +1,7 @@
 /*
  * @Author: zxy
  * @Date: 2022-01-04 20:42:27
- * @LastEditTime: 2022-01-05 13:30:40
+ * @LastEditTime: 2022-01-05 15:17:14
  * @FilePath: /sku-bill-system/src/until/time.js
  */
 /**
@@ -10,7 +10,7 @@
  * @return {*}
  */
 const getWeekByDay = (dt) => {
-  let d1 = new Date(dt) 
+  let d1 = new Date(dt)
   let d2 = new Date(dt)
 
   d2.setMonth(0)
@@ -98,7 +98,7 @@ const getDateByDayFor7 = (date) => {
   }
 
   dateList.push([time.getFullYear(), month, day].join('-'));
-  for (let i = 1; i <7; i++) {
+  for (let i = 1; i < 7; i++) {
     let now = new Date(base += oneDay);
 
     let month = now.getMonth() + 1
@@ -107,7 +107,7 @@ const getDateByDayFor7 = (date) => {
     if (month.toString().length !== 2) {
       month = 0 + month.toString()
     }
-  
+
     if (day.toString().length !== 2) {
       day = 0 + day.toString()
     }
@@ -171,14 +171,14 @@ const getFirstAndLastDayByWeek = (date) => {
     startDay,
     lastDay
   }
-} 
+}
 
 /**
  * @description: 获得当前年月日 格式为yyyy-mm-dd
  * @param {*}
  * @return {*}
  */
- const getNowDate = () => {
+const getNowDate = () => {
   const date = new Date()
   let month = (date.getMonth() + 1).toString()
   let day = date.getDate().toString()
@@ -206,6 +206,63 @@ const getDateByDayInWeek = (date) => {
   return weekArr[dateObj.getDay()]
 }
 
+/**
+ * 获取该月的第一天（date为date对象）
+ * 返回格式: YYYY-mm-dd
+ *    例子: 当日为: 2020-11-27
+ *      返回日期为: 2020-11-01
+ * */
+const getCurrentMonthFirstDay = (date) => {
+  date.setDate(1);
+  let month = parseInt(date.getMonth() + 1);
+  let day = date.getDate();
+  if (month < 10) {
+    month = '0' + month
+  }
+  if (day < 10) {
+    day = '0' + day
+  }
+  return date.getFullYear() + '-' + month + '-' + day;
+}
+
+/**
+ * 获取当前月的最后一天（date为date对象）
+ * 返回格式: YYYY-mm-dd
+ *    例子: 当日为: 2020-11-27
+ *      返回日期为: 2020-11-30
+ * */
+function getCurrentMonthLastDay(date) {
+  let currentMonth = date.getMonth();
+  let nextMonth = ++currentMonth;
+  let nextMonthFirstDay = new Date(date.getFullYear(), nextMonth, 1);
+  let oneDay = 1000 * 60 * 60 * 24;
+  let lastTime = new Date(nextMonthFirstDay - oneDay);
+  let month = parseInt(lastTime.getMonth() + 1);
+  let day = lastTime.getDate();
+  if (month < 10) {
+    month = '0' + month
+  }
+  if (day < 10) {
+    day = '0' + day
+  }
+  return date.getFullYear() + '-' + month + '-' + day;
+}
+
+/**
+ * @description: 获得每月的开头和结束（date为date对象）
+ * @param {*}
+ * @return {*}
+ */
+ const getFirstAndLastDayByMonth = (date) => {
+  let startDay = getCurrentMonthFirstDay(date)
+  let lastDay = getCurrentMonthLastDay(date)
+
+  return {
+    startDay,
+    lastDay
+  }
+}
+
 export {
   getWeekByDay,
   getStartAndEndDayByWeek,
@@ -214,5 +271,8 @@ export {
   getNowDate,
   getFirstAndLastDayByWeek,
   getDateByDayFor7,
-  getDateByDayInWeek
+  getDateByDayInWeek,
+  getCurrentMonthFirstDay,
+  getCurrentMonthLastDay,
+  getFirstAndLastDayByMonth
 }

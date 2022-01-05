@@ -1,7 +1,7 @@
 <!--
  * @Author: zxy
  * @Date: 2022-01-03 15:44:21
- * @LastEditTime: 2022-01-05 13:36:47
+ * @LastEditTime: 2022-01-05 16:15:43
  * @FilePath: /sku-bill-system/src/views/bill/weekEcharts/weekEcharts.vue
 -->
 <template>
@@ -191,7 +191,7 @@ const initNowDate = () => {
 const chooseDay = (e) => {
   let { startDay, lastDay } = getFirstAndLastDayByWeek(new Date(e))
 
-  emit('getWeekData', startDay, lastDay, e)
+  emit('getWeekData', startDay, lastDay, e, true)
 };
 
 /**
