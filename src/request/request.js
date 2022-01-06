@@ -1,7 +1,7 @@
 /*
  * @Author: zxy
  * @Date: 2022-01-01 20:05:02
- * @LastEditTime: 2022-01-05 18:30:19
+ * @LastEditTime: 2022-01-06 09:38:37
  * @FilePath: /sku-bill-system/src/request/request.js
  */
 import axios from "axios";
@@ -16,7 +16,7 @@ export function request(option) {
   // 创建axios实例对象，添加全局配置
   const service = axios.create({
     baseURL: config.EnvConfig.pord.baseAPI,
-    timeout: 8000
+    timeout: 80000
   })
 
   // 请求发送之前拦截

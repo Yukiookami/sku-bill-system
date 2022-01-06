@@ -1,7 +1,7 @@
 <!--
  * @Author: zxy
  * @Date: 2022-01-01 21:28:20
- * @LastEditTime: 2022-01-05 14:26:52
+ * @LastEditTime: 2022-01-06 09:49:07
  * @FilePath: /sku-bill-system/src/views/bill/yearEcharts/yearEcharts.vue
 -->
 <template>
@@ -16,7 +16,7 @@
               <i
                 class="iconfont icon-chart-area text-color-5c font-size-18"
               ></i>
-              {{ state.yaerText }}
+              {{ state.yaerText }} (総計: {{ state.yaerMoney }} 円)
             </div>
 
             <div class="font-bold flex-box-y-center font-size-16">
@@ -72,6 +72,8 @@ const state = reactive({
   yaerText: "年次統計",
   // 是否选择时间
   pickYear: false,
+  // 一年的总开销
+  yaerMoney: 0,
   // 年度折线图显示的时间表
   category: [],
   // 年度总消费
@@ -261,6 +263,8 @@ const initYearEcharts = () => {
  * @return {*}
  */
 const initYearData = (data) => {
+  // 一年的总开销
+  let yaerMoney = 0
   // 饼图数据
   let typeList = []
   let series = []
@@ -281,6 +285,7 @@ const initYearData = (data) => {
   let lifeData = state.barData
 
   data.forEach(ele => {
+    yaerMoney += ele.payMoney
     let type = ele.type.split('/')[0]
 
     // 折线图数据
@@ -311,6 +316,7 @@ const initYearData = (data) => {
   })
 
   state.pieData = series
+  state.yaerMoney = yaerMoney
 
   initYearEcharts()
   initYearRing()

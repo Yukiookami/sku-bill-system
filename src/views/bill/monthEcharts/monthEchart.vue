@@ -1,7 +1,7 @@
 <!--
  * @Author: zxy
  * @Date: 2022-01-03 11:50:52
- * @LastEditTime: 2022-01-05 17:51:15
+ * @LastEditTime: 2022-01-06 09:52:03
  * @FilePath: /sku-bill-system/src/views/bill/monthEcharts/monthEchart.vue
 -->
 <template>
@@ -261,8 +261,6 @@ const initNumberBord = (data) => {
   series = !series.toString() ? [{name: '', value: 0}] : series
   state.config.data = series
   state.config = {...state.config}
-
-  console.log(series.toString())
 
   state.payConfig.number[0] = payCount
   state.payConfig = {...state.payConfig} 
