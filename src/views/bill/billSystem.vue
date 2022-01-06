@@ -1,7 +1,7 @@
 <!--
  * @Author: zxy
  * @Date: 2022-01-01 19:42:03
- * @LastEditTime: 2022-01-05 17:06:58
+ * @LastEditTime: 2022-01-06 12:58:02
  * @FilePath: /sku-bill-system/src/views/bill/billSystem.vue
 -->
 <template>
@@ -196,13 +196,14 @@ const getWeekData = async (startDay, lastDay, nowDate, falg) => {
 
     res.data ? state.weekDataList = res.data : null
 
-    // 更新月数据
+    // 更新月和年数据
     if (falg) {
       let { startDay: monthStarDay, lastDay: monthLastDay } = getFirstAndLastDayByMonth(new Date(nowDate))
 
-      changeYear(nowDate.slice(0, 4))
-
-      getMonthData(monthStarDay, monthLastDay, nowDate)
+      axios.all([
+        changeYear(nowDate.slice(0, 4)),
+        getMonthData(monthStarDay, monthLastDay, nowDate)
+      ])
     }
   } catch (err) {
     console.log(err)
@@ -215,10 +216,8 @@ const getWeekData = async (startDay, lastDay, nowDate, falg) => {
  * @return {*}
  */
 const changeYear = (year) => {
-  if (state.showYear !== year) {
-    state.showYear = +year
-    getDataInYear()
-  }
+  state.showYear = +year
+  getDataInYear()
 }
 
 /**
