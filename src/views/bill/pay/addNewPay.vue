@@ -1,7 +1,7 @@
 <!--
  * @Author: zxy
  * @Date: 2022-01-02 17:24:25
- * @LastEditTime: 2022-01-05 16:09:12
+ * @LastEditTime: 2022-01-07 14:17:14
  * @FilePath: /sku-bill-system/src/views/bill/pay/addNewPay.vue
 -->
 <template>
@@ -166,6 +166,10 @@ const state = reactive({
             {
               value: "交通料",
               label: "交通料",
+            },
+            {
+              value: "家賃",
+              label: "家賃",
             },
             {
               value: "その他",
