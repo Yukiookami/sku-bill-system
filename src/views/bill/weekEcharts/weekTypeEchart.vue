@@ -1,7 +1,7 @@
 <!--
  * @Author: zxy
  * @Date: 2022-01-03 17:03:47
- * @LastEditTime: 2022-01-05 13:26:20
+ * @LastEditTime: 2022-01-12 20:06:21
  * @FilePath: /sku-bill-system/src/views/bill/weekEcharts/weekTypeEchart.vue
 -->
 <template>
@@ -10,7 +10,9 @@
     <div class="week-type-echarts-header flex-box-between-cneter">
       <div class="text-color-c3">
         <i class="iconfont icon-chart-area font-size-16 text-color-5c"></i>
-        <span class="font-size-12 margrin-side-mini">支出タイプ（週）</span>
+        <span 
+        @click="changeBordData"
+        class="font-size-12 margrin-side-mini hover">{{ state.bordTitle }}</span>
       </div>
 
       <div>
@@ -18,26 +20,44 @@
       </div>
     </div>
 
-    <div class="week-type-echarts">
-      <div class="week-type-echart-dom" ref="weekTypeChart"></div>
+    <div class="flip-container">
+      <div class="flipper"
+      :class="{'flipper-change': !state.isWeek}">
+        <!-- 周类型 -->
+        <div class="week-type-echarts front">
+          <div class="week-type-echart-dom" ref="weekTypeChart"></div>
+        </div>
+        <!-- 月类型 -->
+        <div class="month-type-echarts back">
+          <div class="month-type-echart-dom" ref="monthTypeChart"></div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { reactive, ref } from "@vue/reactivity";
+import { computed, reactive, ref } from "@vue/reactivity";
 import { onMounted, watch } from "@vue/runtime-core";
 import * as echarts from "echarts";
 
 const weekTypeChart = ref(null)
+const monthTypeChart = ref(null)
 
 const props = defineProps({
-  weekDataList: Array
+  weekDataList: Array,
+  monthDataList: Array
 })
 
 const state = reactive({
   seriesData: [],
-  xData: []
+  xData: [],
+  // 当前是否为周统计
+  isWeek: true,
+  // 标题
+  bordTitle: computed(() => state.isWeek ? '支出タイプ（週）' : '支出タイプ（月）'),
+  // 是否不为第一次加载月数据
+  hasMonth: false
 })
 
 /**
@@ -76,8 +96,11 @@ const initPieData = (data) => {
  * @return {*}
  */
 const initWeekTypeEchart = () => {
-  const chartDom = weekTypeChart.value;
+  const chartDom = state.isWeek ? weekTypeChart.value : monthTypeChart.value;
+
   const myChart = echarts.init(chartDom);
+
+  !state.isWeek ? state.hasMonth = true : false
 
   let option = {
     color: [
@@ -142,17 +165,38 @@ watch(() => props.weekDataList, val => {
   initWeekTypeEchart()
 })
 
+// 监听月数据变化
+watch(() => props.monthDataList, val => {
+  initPieData(val)
+  initWeekTypeEchart()
+})
+
 // 初始化数据
 initPieData(props.weekDataList)
 
 onMounted(() => {
   initWeekTypeEchart()
 })
+
+/**
+ * @description: 切换周/月数据
+ * @param {*}
+ * @return {*}
+ */
+const changeBordData = () => {
+  state.isWeek = !state.isWeek
+
+  if (!state.hasMonth) {
+    initPieData(props.monthDataList)
+    initWeekTypeEchart()
+  }
+}
 </script>
 
 <style lang="scss" scoped>
 @import "../../../assets/css/common.scss";
 @import "../../../assets/css/icon/iconfont.css";
+@import "../../../assets/css/anime.scss";
 
 .week-type-echarts-main {
   width: calc(100% - 20px);
@@ -165,14 +209,51 @@ onMounted(() => {
     height: 10px;
   }
 
-  .week-type-echarts {
+  .week-type-echarts,
+  .month-type-echarts {
     height: calc(90% - 10px);
     width: 100%;
 
+    .month-type-echart-dom,
     .week-type-echart-dom {
       height: 100%;
       width: 100%;
     }
   }
+}
+
+// 反转动画
+.flip-container {
+	perspective: 1000px;
+  height: 90%;
+}
+
+.flipper {
+  height: 100%;
+	transition: 0.6s;
+	transform-style: preserve-3d;
+// transform: rotateY(180deg);
+	position: relative;
+}
+
+.flipper-change {
+  transform: rotateY(180deg) !important;
+}
+
+.front, .back {
+	backface-visibility: hidden;
+
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+
+.front {
+	z-index: 2;
+	transform: rotateY(0deg);
+}
+
+.back {
+	transform: rotateY(180deg);
 }
 </style>

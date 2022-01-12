@@ -1,7 +1,7 @@
 <!--
  * @Author: zxy
  * @Date: 2022-01-03 15:44:21
- * @LastEditTime: 2022-01-05 16:15:43
+ * @LastEditTime: 2022-01-12 19:24:40
  * @FilePath: /sku-bill-system/src/views/bill/weekEcharts/weekEcharts.vue
 -->
 <template>
@@ -11,7 +11,7 @@
     <div class="week-echarts-header flex-box-between-cneter">
       <div class="text-color-c3">
         <i class="iconfont icon-chart-area font-size-16 text-color-5c"></i>
-        <span class="font-size-12 margrin-side-mini">週支出統計</span>
+        <span class="font-size-12 margrin-side-mini">週支出統計 (総計: {{ state.weekMoney }}円)</span>
       </div>
 
       <el-date-picker
@@ -57,6 +57,7 @@ const props = defineProps({
 const state = reactive({
   nowTime: "",
   nowYear: "2022",
+  weekMoney: 0,
   weekPayList: []
 });
 
@@ -208,6 +209,7 @@ const initEchartDataByWeek = (data, time) => {
     let dateArr = getDateByDayFor7(firstDay)
 
     data.forEach(ele => {
+      state.weekMoney += ele.payMoney
       let index = dateArr.findIndex(item => ele.payTime.slice(0, 10) === item)
 
       if (index !== -1) {

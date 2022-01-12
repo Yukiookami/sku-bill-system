@@ -1,7 +1,7 @@
 <!--
  * @Author: zxy
  * @Date: 2022-01-01 19:42:03
- * @LastEditTime: 2022-01-06 12:58:02
+ * @LastEditTime: 2022-01-12 19:26:33
  * @FilePath: /sku-bill-system/src/views/bill/billSystem.vue
 -->
 <template>
@@ -88,10 +88,11 @@
               </dv-border-box-13>
             </div>
 
-            <!-- 周开销类型分布 -->
+            <!-- 周/月开销类型分布 -->
             <div class="bill-system-week-type-echart">
               <dv-border-box-12>
-                <WeekTypeEchart :weekDataList="state.weekDataList"></WeekTypeEchart>
+                <WeekTypeEchart :weekDataList="state.weekDataList"
+                :monthDataList="state.monthDataList"></WeekTypeEchart>
               </dv-border-box-12>
             </div>
 
